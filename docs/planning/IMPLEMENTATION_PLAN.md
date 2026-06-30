@@ -966,7 +966,7 @@ backend feature. Check boxes as you complete each step.
 
 > Legend — Complexity: S/M/L · Risk: Low/Medium/High
 
-### ☐ S01 — Repository scaffold & tooling
+### ☑ S01 — Repository scaffold & tooling
 - **Goal:** Establish the Next.js + TypeScript monorepo-of-one with linting, formatting, and test runners.
 - **Scope:** Next.js App Router app, TS strict, ESLint/Prettier, Vitest + Playwright config, dir structure (`app/`, `src/server/{services,repositories,db}`, `src/lib`, `tests/`).
 - **Files likely to change:** `package.json`, `tsconfig.json`, `next.config.ts`, `.eslintrc`, `vitest.config.ts`, `playwright.config.ts`, `src/**` skeleton.
