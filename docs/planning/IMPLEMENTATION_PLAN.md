@@ -978,7 +978,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** delete scaffold; no data risk.
 - **Complexity:** M · **Risk:** Low
 
-### ☐ S02 — Docker Compose + Postgres 18 + env
+### ☑ S02 — Docker Compose + Postgres 18 + env
 - **Goal:** `docker compose up --build` brings up `db` (PG18), one-shot `migrate`, and `web`.
 - **Scope:** `docker-compose.yml`, `Dockerfile` (multi-stage), healthchecks, `.env.example`, env loader, SMTP relay config placeholder.
 - **Files:** `docker-compose.yml`, `Dockerfile`, `.dockerignore`, `.env.example`, `src/lib/env.ts`.
@@ -990,7 +990,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** `docker compose down -v`.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S03 — Database schema & migrations (Drizzle)
+### ☑ S03 — Database schema & migrations (Drizzle)
 - **Goal:** Full schema (§3) created via drizzle-kit migrations; fresh DB has 0 app rows.
 - **Scope:** Drizzle schema, pgEnums, citext/pg_trgm extensions, constraints (RESTRICT/CASCADE, composite FK for epic-team), indexes, migration files, migrate runner.
 - **Files:** `src/server/db/schema.ts`, `src/server/db/client.ts`, `db/migrations/*`, `drizzle.config.ts`, `scripts/migrate.ts`.
@@ -1002,7 +1002,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** drop schema / recreate volume.
 - **Complexity:** L · **Risk:** High
 
-### ☐ S04 — Backend foundation (layering, errors, validation, session util)
+### ☑ S04 — Backend foundation (layering, errors, validation, session util)
 - **Goal:** Shared backend primitives: route→service→repo wiring, error envelope, Zod helpers, session/cookie utilities, auth guard.
 - **Scope:** error types + HTTP mapper (incl. 23503→409), Zod parse helper, Argon2id wrapper, session sign/verify cookie, `requireUser` guard.
 - **Files:** `src/server/http/errors.ts`, `src/server/http/respond.ts`, `src/lib/validation.ts`, `src/server/auth/{password,session,guard}.ts`.
@@ -1014,7 +1014,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert module; no schema impact.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S05 — Signup + verification-token issuance + SMTP
+### ☑ S05 — Signup + verification-token issuance + SMTP
 - **Goal:** `POST /api/auth/signup` creates unverified user, issues 24h single-use token, sends email via SMTP relay.
 - **Scope:** signup service, token service (hash, 24h expiry, invalidate prior), Nodemailer mail service, email template.
 - **Files:** `src/server/services/auth.service.ts`, `src/server/services/token.service.ts`, `src/server/services/mail.service.ts`, `app/api/auth/signup/route.ts`.
@@ -1026,7 +1026,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** disable route; revert service.
 - **Complexity:** L · **Risk:** High
 
-### ☐ S06 — Verify + resend + login + logout + me
+### ☑ S06 — Verify + resend + login + logout + me
 - **Goal:** Complete the auth lifecycle endpoints.
 - **Scope:** verify (consume token, 410 on expired/used), resend (invalidate prior, generic response, rate limit), login (verify hash + email_verified, set session, 403 unverified), logout (clear), me.
 - **Files:** `app/api/auth/{verify,resend-verification,login,logout,me}/route.ts`, extend `auth.service.ts`, `token.service.ts`.
@@ -1038,7 +1038,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert routes.
 - **Complexity:** L · **Risk:** High
 
-### ☐ S07 — Teams API
+### ☑ S07 — Teams API
 - **Goal:** Team CRUD with case-insensitive uniqueness and delete-restriction.
 - **Scope:** list (with counts/canDelete), create, rename (modified_at on real change), delete (409 if tickets/epics).
 - **Files:** `src/server/services/team.service.ts`, `src/server/repositories/team.repo.ts`, `app/api/teams/route.ts`, `app/api/teams/[id]/route.ts`.
@@ -1050,7 +1050,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert routes/service.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S08 — Epics API
+### ☑ S08 — Epics API
 - **Goal:** Epic CRUD, team immutable, delete-restriction when referenced.
 - **Scope:** list by team (counts/canDelete), create (team set), edit (no team change), delete (409 if referenced).
 - **Files:** `src/server/services/epic.service.ts`, `src/server/repositories/epic.repo.ts`, `app/api/epics/route.ts`, `app/api/epics/[id]/route.ts`.
@@ -1062,7 +1062,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S09 — Tickets API (CRUD)
+### ☑ S09 — Tickets API (CRUD)
 - **Goal:** Ticket create/get/edit/delete with enum + cross-team epic validation and modified_at semantics.
 - **Scope:** create (defaults state new), get (author+epic title), patch (no-op detection, cross-team epic reject, team change clears epic), delete (cascade comments).
 - **Files:** `src/server/services/ticket.service.ts`, `src/server/repositories/ticket.repo.ts`, `app/api/tickets/route.ts`, `app/api/tickets/[id]/route.ts`.
@@ -1074,7 +1074,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert.
 - **Complexity:** L · **Risk:** High
 
-### ☐ S10 — Ticket state endpoint (drag-and-drop)
+### ☑ S10 — Ticket state endpoint (drag-and-drop)
 - **Goal:** Fast dedicated `PATCH /api/tickets/{id}/state` for board DnD.
 - **Scope:** validate enum, persist, advance modified_at, return updated ticket.
 - **Files:** `app/api/tickets/[id]/state/route.ts`, extend `ticket.service.ts`.
@@ -1086,7 +1086,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert route.
 - **Complexity:** S · **Risk:** Low
 
-### ☐ S11 — Comments API
+### ☑ S11 — Comments API
 - **Goal:** List (oldest first) and create comments without touching ticket modified_at.
 - **Scope:** list, create (author from session, non-empty).
 - **Files:** `src/server/services/comment.service.ts`, `src/server/repositories/comment.repo.ts`, `app/api/tickets/[id]/comments/route.ts`.
@@ -1098,7 +1098,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert.
 - **Complexity:** S · **Risk:** Low
 
-### ☐ S12 — Board query endpoint
+### ☑ S12 — Board query endpoint
 - **Goal:** `GET /api/board` returns 5 columns ordered by modified_at DESC with AND filters + case-insensitive title search.
 - **Scope:** grouped query, counts, filters (type/epicId/q), 100+ ticket performance.
 - **Files:** `src/server/services/board.service.ts`, `app/api/board/route.ts`, extend `ticket.repo.ts`.
@@ -1110,7 +1110,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S13 — Health & readiness
+### ☑ S13 — Health & readiness
 - **Goal:** `/api/health` + `/api/ready` (DB check) for compose gating.
 - **Scope:** liveness, readiness with `SELECT 1`.
 - **Files:** `app/api/health/route.ts`, `app/api/ready/route.ts`.
@@ -1122,7 +1122,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert.
 - **Complexity:** S · **Risk:** Low
 
-### ☐ S14 — Frontend foundation (shell, routing, query client, auth context)
+### ☑ S14 — Frontend foundation (shell, routing, query client, auth context)
 - **Goal:** App shell (header/nav/user menu), TanStack Query provider, design tokens, auth bootstrap via `/me`, route guards + redirects.
 - **Scope:** layout, providers, shared components, api client, 401→login redirect.
 - **Files:** `app/layout.tsx`, `app/(app)/layout.tsx`, `src/ui/**`, `src/lib/api-client.ts`, `src/lib/query.ts`, auth context.
@@ -1134,7 +1134,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert UI scaffold.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S15 — Auth screens (signup / login / verify result)
+### ☑ S15 — Auth screens (signup / login / verify result)
 - **Goal:** Implement wireframe-2 screens.
 - **Scope:** signup, login (+resend block on 403), verify-result (success/expired + resend).
 - **Files:** `app/signup/page.tsx`, `app/login/page.tsx`, `app/verify/page.tsx`, auth components/hooks.
@@ -1146,7 +1146,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert pages.
 - **Complexity:** L · **Risk:** Medium
 
-### ☐ S16 — Teams screen
+### ☑ S16 — Teams screen
 - **Goal:** Implement wireframe-4.
 - **Scope:** table with counts, create panel, rename, delete (disabled when referenced), 409 messaging.
 - **Files:** `app/(app)/teams/page.tsx`, team components/hooks.
@@ -1158,7 +1158,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert page.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S17 — Epics screen
+### ☑ S17 — Epics screen
 - **Goal:** Implement wireframe-5.
 - **Scope:** team selector, table, create, edit panel (team immutable), delete (disabled when referenced).
 - **Files:** `app/(app)/epics/page.tsx`, epic components/hooks.
@@ -1170,7 +1170,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert page.
 - **Complexity:** M · **Risk:** Medium
 
-### ☐ S18 — Board screen + drag-and-drop
+### ☑ S18 — Board screen + drag-and-drop
 - **Goal:** Implement wireframe-1 with accessible DnD + filters.
 - **Scope:** team select, filter bar (search/type/epic/clear + count), 5 columns, cards, optimistic move with rollback on failure.
 - **Files:** `app/(app)/board/page.tsx`, `src/ui/board/**`, dnd hooks.
@@ -1182,7 +1182,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert page.
 - **Complexity:** L · **Risk:** High
 
-### ☐ S19 — Ticket detail + comments
+### ☑ S19 — Ticket detail + comments
 - **Goal:** Implement wireframe-3 (create/edit/details + comments panel).
 - **Scope:** form (team/type/state/epic/title/body), meta line UTC, save/delete(confirm), team-change clears epic, comments (oldest first, post).
 - **Files:** `app/(app)/tickets/new/page.tsx`, `app/(app)/tickets/[id]/page.tsx`, ticket+comment components/hooks.
@@ -1194,7 +1194,7 @@ backend feature. Check boxes as you complete each step.
 - **Rollback:** revert pages.
 - **Complexity:** L · **Risk:** Medium
 
-### ☐ S20 — E2E hardening, migration tests, compose smoke, README
+### ☑ S20 — E2E hardening, migration tests, compose smoke, README
 - **Goal:** Full-journey E2E, migration + compose smoke tests, README runbook, secret-scan.
 - **Scope:** signup→verify→login→team→epic→ticket→DnD→refresh journey; migration tests; `docker compose up --build` smoke; README; verify no committed secrets.
 - **Files:** `tests/e2e/**`, `tests/migration/**`, `tests/smoke/**`, `README.md`, CI workflow.
