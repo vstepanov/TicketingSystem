@@ -17,7 +17,7 @@ Each step has a status box — update it as you go:
 Also update the **Wave status** table below when a wave changes state. Keep the
 "Last updated" line current.
 
-**Last updated:** 2026-07-01 · **Overall:** 2 / 5 waves complete
+**Last updated:** 2026-07-01 · **Overall:** 3 / 5 waves complete
 
 ### Wave status
 
@@ -25,7 +25,7 @@ Also update the **Wave status** table below when a wave changes state. Keep the
 |------|------|--------|--------|-------|
 | 0 | Shared design-system fixes | (all) | `[x]` done | Consolidated time helpers + Table capabilities; no visible change |
 | 1 | Kanban Board | `01-kanban-board.png` | `[x]` done | Whole card is now the drag source (no visible handle); relative bottom-right timestamp; Search label; taller cards. Header/nav/columns/controls already matched. |
-| 2 | Auth flow (login / signup / verify) | `02-auth-flow.png` | `[ ]` pending | |
+| 2 | Auth flow (login / signup / verify) | `02-auth-flow.png` | `[x]` done | Removed "TICKET TRACKER" eyebrow from AuthCard; circular checkmark on verify success; centered "Account not verified?" + full-width outlined Resend on login; full-width "Continue to login". Copy/labels/links already matched. |
 | 3 | Ticket details | `03-ticket-details.png` | `[ ]` pending | |
 | 4 | Team management | `04-team-management.png` | `[ ]` pending | |
 | 5 | Epic management | `05-epic-management.png` | `[ ]` pending | |
@@ -110,24 +110,29 @@ The mockup shows three reference cards (Log in / Create account / Email
 verification). Files: `app/login/page.tsx`, `app/signup/page.tsx`,
 `app/verify/verify-result.tsx`, `src/ui/AuthCard.tsx`.
 
-- `[ ]` **2.1 Brand line.** `AuthCard.tsx` prints a "TICKET TRACKER" eyebrow the
-  mockup cards don't show. Decide: remove it, or confirm it's an intentional
-  addition. If kept, document the deviation here.
-- `[ ]` **2.2 Verify success icon.** Mockup shows a large **circular** checkmark
-  (gray circle, dark ✓) above "Email verified". `verify-result.tsx` renders only
-  an inline "✓" text. Add the circular success graphic.
-- `[ ]` **2.3 Login "not verified" block.** Mockup shows muted centered text
-  "Account not verified?" above a full-width outlined "Resend email" button.
-  Current code wraps it in a bordered gray box — restyle to match.
-- `[ ]` **2.4 Button width.** Ensure primary/secondary buttons render full-width
-  inside the card (submit buttons already stretch; "Continue to login" is wrapped
-  in a `Link` + `Button` and may not — make it full-width).
-- `[ ]` **2.5 Copy/labels.** Verify titles & subtitles match: "Log in" / "Use your
-  verified account.", "Create account" / "Email verification is required."
-  (password placeholder "Minimum 8 characters"), "Email verified" / "Your account
-  is ready to use." and the "Expired or invalid link" error state.
-- `[ ]` **2.6 Links.** "Create an account →" and "Already registered? Log in →"
-  match mockup placement/weight.
+- `[x]` **2.1 Brand line.** Removed the "TICKET TRACKER" eyebrow (`<div>` +
+  `BRAND_STYLE`) from `AuthCard.tsx` so the card now starts at the title, matching
+  the mockup. Title/subtitle spacing unchanged (title `margin:0`, subtitle keeps
+  its `--space-1`/`--space-5` margins). The authenticated shell's brand
+  (`Header.tsx`) is untouched — `app-shell.test.tsx` still finds it.
+- `[x]` **2.2 Verify success icon.** `verify-result.tsx` success state now renders
+  a centered 64px circular graphic (`--color-surface-muted` fill, dark 32px ✓,
+  `aria-hidden="true"`) above the "Email verified" heading; the inline "✓ " text
+  in the `role="status"` line was removed while keeping the status message.
+- `[x]` **2.3 Login "not verified" block.** Replaced the bordered gray box with
+  centered muted text "Account not verified?" directly above a full-width outlined
+  "Resend email" button, still inside `role="region"` with its label. Behavior
+  (resend POST, 429 handling, `resendMessage`) unchanged.
+- `[x]` **2.4 Button width.** "Continue to login" is now full-width — the wrapping
+  `Link` is `display:block` and the `Button` has `width:100%`. Login/signup submit
+  buttons already stretch as flex-column children (verified, no change).
+- `[!]` **2.5 Copy/labels.** Already matched — verified "Log in" / "Use your
+  verified account.", "Create account" / "Email verification is required." with
+  placeholder "Minimum 8 characters", "Email verified" / "Your account is ready to
+  use.", and error "Expired or invalid link". No changes. (Signup post-submit
+  "Check your email" state left intact per plan.)
+- `[!]` **2.6 Links.** Already matched — "Create an account →" (login) and
+  "Already registered? Log in →" (signup) placement/weight correct. No changes.
 
 ---
 

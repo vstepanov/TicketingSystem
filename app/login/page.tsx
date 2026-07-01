@@ -33,11 +33,7 @@ const FORM_ERROR_STYLE = {
 } as const;
 
 const RESEND_BOX_STYLE = {
-  marginTop: "var(--space-4)",
-  padding: "var(--space-4)",
-  border: "1px solid var(--color-border)",
-  borderRadius: "var(--radius-md)",
-  background: "var(--color-surface-muted)",
+  marginTop: "var(--space-5)",
 } as const;
 
 export default function LoginPage() {
@@ -189,17 +185,34 @@ export default function LoginPage() {
 
       {showResend ? (
         <div style={RESEND_BOX_STYLE} role="region" aria-label="Resend verification">
-          <p style={{ margin: "0 0 var(--space-3)", fontSize: "var(--text-sm)" }}>
-            Account not verified? Resend the verification email.
+          <p
+            style={{
+              margin: "0 0 var(--space-3)",
+              textAlign: "center",
+              fontSize: "var(--text-sm)",
+              color: "var(--color-text-muted)",
+            }}
+          >
+            Account not verified?
           </p>
-          <Button variant="secondary" onClick={onResend} disabled={resending}>
+          <Button
+            variant="secondary"
+            onClick={onResend}
+            disabled={resending}
+            style={{ width: "100%" }}
+          >
             {resending ? <Spinner /> : null}
             {resending ? "Sending…" : "Resend email"}
           </Button>
           {resendMessage ? (
             <p
               role="status"
-              style={{ marginTop: "var(--space-3)", fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}
+              style={{
+                marginTop: "var(--space-3)",
+                textAlign: "center",
+                fontSize: "var(--text-sm)",
+                color: "var(--color-text-muted)",
+              }}
             >
               {resendMessage}
             </p>
