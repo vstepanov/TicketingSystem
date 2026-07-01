@@ -33,11 +33,15 @@ const COLUMN_STYLE: CSSProperties = {
   borderRadius: "var(--radius-lg)",
 };
 
-// Circular grey count badge in the column header (mockup 01).
+// Circular count badge in the column header (mockup 01). The column body is the
+// light `--color-surface-muted` grey, so the circle uses a distinctly darker
+// grey (`--color-border-strong`) — otherwise it blends into the column and looks
+// like there is no circle at all.
 const COUNT_STYLE: CSSProperties = {
   width: "28px",
   height: "28px",
   padding: 0,
+  background: "var(--color-border-strong)",
 };
 
 const HEADER_STYLE: CSSProperties = {
