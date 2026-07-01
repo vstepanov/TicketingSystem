@@ -228,7 +228,7 @@ describe("Filters drive the query", () => {
 
     await screen.findByText("Fix login bug");
 
-    await user.type(screen.getByLabelText("Search title"), "login");
+    await user.type(screen.getByLabelText("Search"), "login");
 
     await waitFor(
       () => {
