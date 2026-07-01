@@ -43,11 +43,14 @@ import {
 } from "./use-epics";
 
 const HEADER_STYLE: CSSProperties = {
+  marginBottom: "var(--space-4)",
+};
+
+const TITLE_ROW_STYLE: CSSProperties = {
   display: "flex",
-  alignItems: "flex-end",
+  alignItems: "center",
   justifyContent: "space-between",
   gap: "var(--space-4)",
-  marginBottom: "var(--space-4)",
   flexWrap: "wrap",
 };
 
@@ -57,10 +60,9 @@ const TITLE_STYLE: CSSProperties = {
   fontWeight: 600,
 };
 
+// Team select sits BENEATH the title on the left (mockup 05).
 const CONTROLS_STYLE: CSSProperties = {
-  display: "flex",
-  alignItems: "flex-end",
-  gap: "var(--space-3)",
+  marginTop: "var(--space-3)",
 };
 
 const HELPER_STYLE: CSSProperties = {
@@ -168,9 +170,17 @@ export function EpicsScreen() {
   return (
     <section>
       <div style={HEADER_STYLE}>
-        <h1 style={TITLE_STYLE}>Epics</h1>
-        <div style={CONTROLS_STYLE}>
-          {teams.length > 0 && (
+        <div style={TITLE_ROW_STYLE}>
+          <h1 style={TITLE_STYLE}>Epics</h1>
+          <Button
+            onClick={() => setShowCreate((v) => !v)}
+            disabled={!selectedTeamId}
+          >
+            + Create epic
+          </Button>
+        </div>
+        {teams.length > 0 && (
+          <div style={CONTROLS_STYLE}>
             <div style={{ minWidth: "220px" }}>
               <Select
                 label="Team"
@@ -185,14 +195,8 @@ export function EpicsScreen() {
                 ))}
               </Select>
             </div>
-          )}
-          <Button
-            onClick={() => setShowCreate((v) => !v)}
-            disabled={!selectedTeamId}
-          >
-            + Create epic
-          </Button>
-        </div>
+          </div>
+        )}
       </div>
 
       {teamsQuery.isLoading ? (
@@ -255,7 +259,7 @@ export function EpicsScreen() {
                   <THead>
                     <Tr>
                       <Th>Title</Th>
-                      <Th>Tickets</Th>
+                      <Th align="center">Tickets</Th>
                       <Th>Modified</Th>
                       <Th style={{ textAlign: "right" }}>Actions</Th>
                     </Tr>

@@ -48,6 +48,7 @@ const CONTEXT_STYLE: CSSProperties = {
 const ACTIONS_STYLE: CSSProperties = {
   display: "flex",
   gap: "var(--space-2)",
+  justifyContent: "flex-end",
 };
 
 export function EditEpicPanel({
@@ -127,9 +128,6 @@ export function EditEpicPanel({
         disabled={updateEpic.isPending}
       />
       <div style={ACTIONS_STYLE}>
-        <Button type="submit" disabled={updateEpic.isPending}>
-          {updateEpic.isPending ? "Saving…" : "Save"}
-        </Button>
         <Button
           type="button"
           variant="secondary"
@@ -137,6 +135,9 @@ export function EditEpicPanel({
           disabled={updateEpic.isPending}
         >
           Cancel
+        </Button>
+        <Button type="submit" disabled={updateEpic.isPending}>
+          {updateEpic.isPending ? "Saving…" : "Save"}
         </Button>
       </div>
     </form>

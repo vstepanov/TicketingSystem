@@ -3,26 +3,35 @@
 /**
  * EpicRow (plan §5.11 wireframe-5) — one row of the Epics table.
  *
- * Displays the title with a truncated description beneath, the ticket count (as
- * a {@link Pill}), the Modified timestamp (UTC), and the Edit / Delete actions:
- *   - Edit asks the parent to open the right-side {@link EditEpicPanel} (team is
- *     immutable there).
- *   - Delete is DISABLED when `canDelete === false` (tickets reference the epic),
- *     with an explanatory tooltip/`aria-disabled` (§5.11). When enabled the
- *     parent opens a ConfirmDialog before deleting.
+ * Displays the title with a truncated description beneath, the ticket count (a
+ * plain centered number), the Modified timestamp (relative), and the actions:
+ *   - Edit (outlined text button) asks the parent to open the right-side
+ *     {@link EditEpicPanel} (team is immutable there).
+ *   - Delete is a small square "×" icon button, DISABLED/grayed when
+ *     `canDelete === false` (tickets reference the epic), with an explanatory
+ *     tooltip/`aria-disabled` (§5.11). When enabled the parent opens a
+ *     ConfirmDialog before deleting.
  */
 import type { CSSProperties } from "react";
 
 import { Button } from "@/ui/Button";
-import { Pill } from "@/ui/Pill";
 import { Td, Tr } from "@/ui/Table";
-import { formatCompactUtc } from "@/ui/format-time";
+import { formatRelative } from "@/ui/format-time";
 import type { Epic } from "./use-epics";
 
 const ACTIONS_STYLE: CSSProperties = {
   display: "flex",
+  alignItems: "center",
   gap: "var(--space-2)",
   justifyContent: "flex-end",
+};
+
+// Small square "×" icon button for delete (mockup 05).
+const DELETE_BUTTON_STYLE: CSSProperties = {
+  width: "34px",
+  padding: 0,
+  fontSize: "var(--text-lg)",
+  lineHeight: 1,
 };
 
 const TITLE_STYLE: CSSProperties = {
@@ -61,11 +70,9 @@ export function EpicRow({
           </p>
         ) : null}
       </Td>
-      <Td>
-        <Pill>{epic.ticketCount}</Pill>
-      </Td>
+      <Td align="center">{epic.ticketCount}</Td>
       <Td style={{ color: "var(--color-text-muted)", fontSize: "var(--text-sm)" }}>
-        {formatCompactUtc(epic.modifiedAt)}
+        {formatRelative(epic.modifiedAt)}
       </Td>
       <Td>
         <div style={ACTIONS_STYLE}>
@@ -77,8 +84,10 @@ export function EpicRow({
             onClick={() => onRequestDelete(epic)}
             disabled={!epic.canDelete}
             title={epic.canDelete ? undefined : DELETE_DISABLED_HINT}
+            aria-label="Delete epic"
+            style={DELETE_BUTTON_STYLE}
           >
-            Delete
+            ×
           </Button>
         </div>
       </Td>
