@@ -205,10 +205,11 @@ Files: `src/ui/teams/TeamsScreen.tsx`, `TeamRow.tsx`, `CreateTeamPanel.tsx`.
 Files: `src/ui/epics/EpicsScreen.tsx`, `EpicRow.tsx`, `EditEpicPanel.tsx`,
 `CreateEpicPanel.tsx`.
 
-- `[x]` **5.1 Header layout.** Re-laid out `EpicsScreen.tsx`: the "Epics" title and
-  the black "+ Create epic" button now share a top `TITLE_ROW_STYLE` flex row
-  (title left, button right); the labelled **Team** select moved BENEATH the title
-  on the left (`CONTROLS_STYLE` with `marginTop`). All behavior preserved (URL
+- `[x]` **5.1 Header layout.** `EpicsScreen.tsx`: the "Epics" title sits on its own
+  line; below it a controls row (`CONTROLS_ROW_STYLE`, `align-items: flex-end`)
+  holds a **shorter** fixed-width Team select (260px, `TEAM_FIELD_STYLE`) on the
+  left and the black "+ Create epic" button pushed right (`margin-left: auto`) on
+  the same horizontal level — matching mockup 05. All behavior preserved (URL
   team sync via `selectTeam`, Create toggle disabled when no team).
 - `[x]` **5.2 Delete action = "×" icon.** In `EpicRow.tsx` the delete action is now a
   small 34px-square outlined `Button` showing "×" (`DELETE_BUTTON_STYLE`), grayed
@@ -219,9 +220,9 @@ Files: `src/ui/epics/EpicsScreen.tsx`, `EpicRow.tsx`, `EditEpicPanel.tsx`,
   ("Title", "Tickets", "Modified", "Actions"); global uppercase removed in 0.2.
   No change beyond adding `align="center"` to the Tickets header (see 5.4).
 - `[x]` **5.4 Count / modified columns.** `EpicRow.tsx` renders `epic.ticketCount`
-  as a plain number in `Td align="center"` (Pill removed) with the matching
-  `Th align="center"` in `EpicsScreen.tsx`; Modified swapped
-  `formatCompactUtc` → `formatRelative`.
+  as a plain number (Pill removed); Modified swapped `formatCompactUtc` →
+  `formatRelative`. Per mockup 05 the **Tickets and Modified columns are
+  right-aligned** — both the data `Td`s and their `Th`s use `align="right"`.
 - `[!]` **5.5 Row subtitle.** Already matched — muted `DESCRIPTION_STYLE` line renders
   `epic.description` (single-line, ellipsis, `--text-sm`, muted) under the title.
   No change.

@@ -46,23 +46,25 @@ const HEADER_STYLE: CSSProperties = {
   marginBottom: "var(--space-4)",
 };
 
-const TITLE_ROW_STYLE: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: "var(--space-4)",
-  flexWrap: "wrap",
-};
-
 const TITLE_STYLE: CSSProperties = {
-  margin: 0,
+  margin: "0 0 var(--space-3)",
   fontSize: "var(--text-xl)",
   fontWeight: 600,
 };
 
-// Team select sits BENEATH the title on the left (mockup 05).
-const CONTROLS_STYLE: CSSProperties = {
-  marginTop: "var(--space-3)",
+// Controls row (mockup 05): a shorter Team select on the left and the
+// "+ Create epic" button on the right, aligned on the same horizontal level.
+const CONTROLS_ROW_STYLE: CSSProperties = {
+  display: "flex",
+  alignItems: "flex-end",
+  gap: "var(--space-4)",
+  flexWrap: "wrap",
+};
+
+// Shorter Team dropdown (mockup 05) — fixed width rather than full-bleed.
+const TEAM_FIELD_STYLE: CSSProperties = {
+  width: "260px",
+  maxWidth: "100%",
 };
 
 const HELPER_STYLE: CSSProperties = {
@@ -170,18 +172,10 @@ export function EpicsScreen() {
   return (
     <section>
       <div style={HEADER_STYLE}>
-        <div style={TITLE_ROW_STYLE}>
-          <h1 style={TITLE_STYLE}>Epics</h1>
-          <Button
-            onClick={() => setShowCreate((v) => !v)}
-            disabled={!selectedTeamId}
-          >
-            + Create epic
-          </Button>
-        </div>
-        {teams.length > 0 && (
-          <div style={CONTROLS_STYLE}>
-            <div style={{ minWidth: "220px" }}>
+        <h1 style={TITLE_STYLE}>Epics</h1>
+        <div style={CONTROLS_ROW_STYLE}>
+          {teams.length > 0 && (
+            <div style={TEAM_FIELD_STYLE}>
               <Select
                 label="Team"
                 value={selectedTeamId ?? ""}
@@ -195,8 +189,15 @@ export function EpicsScreen() {
                 ))}
               </Select>
             </div>
-          </div>
-        )}
+          )}
+          <Button
+            style={{ marginLeft: "auto" }}
+            onClick={() => setShowCreate((v) => !v)}
+            disabled={!selectedTeamId}
+          >
+            + Create epic
+          </Button>
+        </div>
       </div>
 
       {teamsQuery.isLoading ? (
@@ -259,8 +260,8 @@ export function EpicsScreen() {
                   <THead>
                     <Tr>
                       <Th>Title</Th>
-                      <Th align="center">Tickets</Th>
-                      <Th>Modified</Th>
+                      <Th align="right">Tickets</Th>
+                      <Th align="right">Modified</Th>
                       <Th style={{ textAlign: "right" }}>Actions</Th>
                     </Tr>
                   </THead>

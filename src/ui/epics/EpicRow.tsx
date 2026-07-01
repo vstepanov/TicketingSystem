@@ -70,8 +70,11 @@ export function EpicRow({
           </p>
         ) : null}
       </Td>
-      <Td align="center">{epic.ticketCount}</Td>
-      <Td style={{ color: "var(--color-text-muted)", fontSize: "var(--text-sm)" }}>
+      <Td align="right">{epic.ticketCount}</Td>
+      <Td
+        align="right"
+        style={{ color: "var(--color-text-muted)", fontSize: "var(--text-sm)" }}
+      >
         {formatRelative(epic.modifiedAt)}
       </Td>
       <Td>
