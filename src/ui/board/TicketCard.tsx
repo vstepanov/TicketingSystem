@@ -37,12 +37,14 @@ const CARD_STYLE: CSSProperties = {
 };
 
 const BADGE_STYLE: CSSProperties = {
+  // Hug the word: sized to content, doesn't stretch to the card width.
   display: "inline-flex",
+  alignSelf: "flex-start",
   alignItems: "center",
-  height: "18px",
-  padding: "0 var(--space-2)",
+  padding: "2px 6px",
   fontSize: "11px",
   fontWeight: 600,
+  lineHeight: 1.2,
   textTransform: "uppercase",
   letterSpacing: "0.03em",
   borderRadius: "999px",

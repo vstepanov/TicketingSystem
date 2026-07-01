@@ -25,9 +25,19 @@ const COLUMN_STYLE: CSSProperties = {
   display: "flex",
   flexDirection: "column",
   minWidth: 0,
+  // Keep every column the same tall shape even when empty (mockup 01); the
+  // board grid stretches them to the tallest, this sets the shared baseline.
+  minHeight: "600px",
   background: "var(--color-surface-muted)",
   border: "1px solid var(--color-border)",
   borderRadius: "var(--radius-lg)",
+};
+
+// Circular grey count badge in the column header (mockup 01).
+const COUNT_STYLE: CSSProperties = {
+  width: "28px",
+  height: "28px",
+  padding: 0,
 };
 
 const HEADER_STYLE: CSSProperties = {
@@ -80,7 +90,7 @@ export function BoardColumn({
     <section style={COLUMN_STYLE} aria-label={`${label} column`}>
       <div style={HEADER_STYLE}>
         <span style={LABEL_STYLE}>{label}</span>
-        <Pill>{count}</Pill>
+        <Pill style={COUNT_STYLE}>{count}</Pill>
       </div>
       <div
         ref={setNodeRef}

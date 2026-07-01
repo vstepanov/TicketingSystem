@@ -31,14 +31,24 @@ const LABEL_STYLE: CSSProperties = {
 
 const SELECT_STYLE: CSSProperties = {
   height: "36px",
-  padding: "0 var(--space-3)",
+  // Extra right padding leaves room for the custom caret.
+  padding: "0 32px 0 var(--space-3)",
   fontSize: "var(--text-base)",
   fontFamily: "inherit",
   color: "var(--color-text)",
-  background: "var(--color-surface)",
+  backgroundColor: "var(--color-surface)",
   border: "1px solid var(--color-border-strong)",
   borderRadius: "var(--radius-md)",
   width: "100%",
+  // Suppress the native control chrome (e.g. the macOS up/down double
+  // chevron) and draw a single down caret to match the wireframe.
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
+  backgroundImage:
+    "url(\"data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='10'%20height='6'%3E%3Cpath%20d='M0%200h10L5%206z'%20fill='%236b6f76'/%3E%3C/svg%3E\")",
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right var(--space-3) center",
 };
 
 const SELECT_ERROR_STYLE: CSSProperties = {

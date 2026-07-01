@@ -85,19 +85,28 @@ Files: `src/ui/board/BoardScreen.tsx`, `FilterBar.tsx`, `BoardColumn.tsx`,
 - `[x]` **1.2 Card timestamp.** Swapped `formatCompactUtc` → `formatRelative`
   ("2h ago"/"Yesterday"/…) and positioned it bottom-right via a dedicated
   `TIMESTAMP_STYLE` (`alignSelf: flex-end`, right-aligned).
-- `[x]` **1.3 Card badge row.** With the handle gone the type badge sits alone at
-  the top of the card. Confirmed pill styling matches (uppercase, `--color-surface-muted`
-  fill, `borderRadius: 999px`).
+- `[x]` **1.3 Card badge row.** The type badge sits alone at the top of the card
+  (uppercase, `--color-surface-muted` fill, `borderRadius: 999px`). Tightened to
+  hug the word: `alignSelf: flex-start`, `padding: 2px 6px` (no fixed height) so
+  the pill is sized to the label rather than stretching.
 - `[x]` **1.4 Card spacing/height.** Bumped card `padding` `--space-3`→`--space-4`
   and inter-row `gap` `--space-2`→`--space-3` for more vertical breathing room.
+- `[x]` **1.9 Equal-height columns.** The board grid uses `align-items: stretch`
+  and each column has `min-height: 600px` (skeleton too), so empty columns keep
+  the same tall grey shape as filled ones (mockup 01).
 - `[x]` **1.5 Filter labels.** Changed the search field `label` from
   "Search title" → "Search" (placeholder "Search title…" kept). "Type"/"Epic"
   already correct.
 - `[!]` **1.6 Controls row.** No change needed — Team select (left, labelled) +
   black "+ New ticket" (right) already sit in a flex header row above the filter
   card, matching the mockup.
-- `[!]` **1.7 Column header.** No change needed — uppercase labels + right-aligned
-  count `Pill` and canonical `BOARD_COLUMN_ORDER` already match.
+- `[x]` **1.7 Column header.** Uppercase labels + canonical `BOARD_COLUMN_ORDER`
+  match; the count is now a fixed 28×28 grey **circle** (`Pill` with equal
+  width/height + `borderRadius: 999px`) per mockup 01.
+- `[x]` **1.10 Dropdown caret.** Shared `Select` now sets `appearance: none`
+  (+ `-webkit`/`-moz`) and draws a single down-caret SVG, replacing the native
+  control chrome (e.g. the macOS up/down double chevron) so every dropdown shows
+  only a down sign.
 - `[!]` **1.8 Header/nav.** No change needed — brand "TICKET TRACKER" (bold, left),
   centered `NavTabs` with active gray fill (`--color-surface-muted`), and
   right-aligned `UserMenu` already match.

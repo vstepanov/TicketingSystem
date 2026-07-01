@@ -111,7 +111,9 @@ const GRID_STYLE: CSSProperties = {
   gridTemplateColumns: "repeat(5, minmax(220px, 1fr))",
   gap: "var(--space-3)",
   overflowX: "auto",
-  alignItems: "start",
+  // Stretch every column to equal height so empty columns keep the same
+  // tall shape as filled ones (mockup 01).
+  alignItems: "stretch",
 };
 
 const SKELETON_CARD_STYLE: CSSProperties = {
@@ -346,6 +348,7 @@ function BoardColumnSkeleton({ state }: { state: TicketState }) {
       style={{
         display: "flex",
         flexDirection: "column",
+        minHeight: "600px",
         background: "var(--color-surface-muted)",
         border: "1px solid var(--color-border)",
         borderRadius: "var(--radius-lg)",
