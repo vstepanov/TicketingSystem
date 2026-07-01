@@ -59,7 +59,7 @@ const LIST_STYLE: CSSProperties = {
 };
 
 const COMMENT_STYLE: CSSProperties = {
-  border: "1px solid var(--color-border)",
+  background: "var(--color-surface-muted)",
   borderRadius: "var(--radius-md)",
   padding: "var(--space-3)",
   display: "flex",
@@ -112,6 +112,12 @@ const FORM_STYLE: CSSProperties = {
   flexDirection: "column",
   gap: "var(--space-2)",
   marginTop: "var(--space-2)",
+};
+
+/** Post-comment button sits at the bottom-right of the panel (mockup §5.9). */
+const POST_ACTIONS_STYLE: CSSProperties = {
+  display: "flex",
+  justifyContent: "flex-end",
 };
 
 export function CommentsPanel({ ticketId }: { ticketId: string }) {
@@ -205,7 +211,7 @@ export function CommentsPanel({ ticketId }: { ticketId: string }) {
             }
           }}
         />
-        <div>
+        <div style={POST_ACTIONS_STYLE}>
           <Button type="submit" disabled={postComment.isPending}>
             {postComment.isPending ? "Posting…" : "Post comment"}
           </Button>

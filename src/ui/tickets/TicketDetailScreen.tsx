@@ -36,8 +36,8 @@ import { useToast } from "@/ui/Toast";
 import { isApiError } from "@/lib/api-client";
 import { TicketForm, type TicketFormErrors, type TicketFormValues } from "./TicketForm";
 import { CommentsPanel } from "./CommentsPanel";
+import { formatMonthDayUtc } from "@/ui/format-time";
 import {
-  formatUtc,
   useDeleteTicket,
   useEpicOptions,
   useTeamOptions,
@@ -49,8 +49,9 @@ import {
 const BACK_STYLE: CSSProperties = {
   display: "inline-block",
   marginBottom: "var(--space-3)",
-  color: "var(--color-text-muted)",
+  color: "var(--color-text)",
   fontSize: "var(--text-sm)",
+  fontWeight: 600,
   textDecoration: "none",
 };
 
@@ -65,12 +66,21 @@ const HEADER_STYLE: CSSProperties = {
 
 const TITLE_STYLE: CSSProperties = {
   margin: "0 0 var(--space-1)",
-  fontSize: "var(--text-xl)",
-  fontWeight: 600,
+  // No token larger than --text-xl (20px); the mockup title is noticeably
+  // bigger, so a literal 28px is used here.
+  fontSize: "28px",
+  fontWeight: 700,
 };
 
+/**
+ * The meta line sits in a subtle gray bar (mockup §5.8). We place it BELOW the
+ * back link and ABOVE the title row so the title stays the dominant heading.
+ */
 const META_STYLE: CSSProperties = {
-  margin: 0,
+  margin: "0 0 var(--space-4)",
+  padding: "var(--space-2) var(--space-3)",
+  background: "var(--color-surface-muted)",
+  borderRadius: "var(--radius-md)",
   color: "var(--color-text-muted)",
   fontSize: "var(--text-sm)",
 };
@@ -260,25 +270,34 @@ export function TicketDetailScreen({ ticketId }: { ticketId: string }) {
   const metaParts = [
     `TCK-${shortId}`,
     `Created by ${ticket.authorEmail}`,
-    `Created ${formatUtc(ticket.createdAt)}`,
-    `Modified ${formatUtc(ticket.modifiedAt)}`,
+    `Created ${formatMonthDayUtc(ticket.createdAt)}`,
+    `Modified ${formatMonthDayUtc(ticket.modifiedAt)}`,
   ];
   if (ticket.epicTitle) {
     metaParts.push(`Epic: ${ticket.epicTitle}`);
   }
 
+  // The ticket detail payload has no team name; resolve it from the loaded
+  // teams list. Fall back to the generic label if it is unavailable.
+  const teamName = teams.find((team) => team.id === ticket.teamId)?.name ?? null;
+  const backLabel = teamName ? `← Back to ${teamName}` : "← Back to board";
+
   const busy = updateTicket.isPending || deleteTicket.isPending;
 
   return (
     <section>
-      <Link href="/board" style={BACK_STYLE}>
-        ← Back to board
+      <Link
+        href={`/board?teamId=${encodeURIComponent(ticket.teamId)}`}
+        style={BACK_STYLE}
+      >
+        {backLabel}
       </Link>
+
+      <p style={META_STYLE}>{metaParts.join(" • ")}</p>
 
       <div style={HEADER_STYLE}>
         <div>
           <h1 style={TITLE_STYLE}>{ticket.title}</h1>
-          <p style={META_STYLE}>{metaParts.join(" • ")}</p>
         </div>
         <div style={ACTIONS_STYLE}>
           <Button

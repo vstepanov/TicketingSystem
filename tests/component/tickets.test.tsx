@@ -295,7 +295,7 @@ describe("Ticket detail (edit)", () => {
       await screen.findByRole("heading", { name: "Login is broken" }),
     ).toBeInTheDocument();
     expect(screen.getByText(/author@example.com/)).toBeInTheDocument();
-    expect(screen.getByText(/Modified 2026-01-02 12:30 UTC/)).toBeInTheDocument();
+    expect(screen.getByText(/Modified Jan 2, 12:30 UTC/)).toBeInTheDocument();
 
     const title = screen.getByLabelText("Title") as HTMLInputElement;
     expect(title.value).toBe("Login is broken");
