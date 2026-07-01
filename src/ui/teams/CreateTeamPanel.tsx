@@ -96,6 +96,7 @@ export function CreateTeamPanel({ onDone }: { onDone?: () => void }) {
             }}
             error={error}
             disabled={createTeam.isPending}
+            placeholder="e.g. Platform Engineering"
             autoComplete="off"
           />
         </div>

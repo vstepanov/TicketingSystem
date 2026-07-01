@@ -148,8 +148,8 @@ export function TeamsScreen() {
             <THead>
               <Tr>
                 <Th>Name</Th>
-                <Th>Tickets</Th>
-                <Th>Epics</Th>
+                <Th align="center">Tickets</Th>
+                <Th align="center">Epics</Th>
                 <Th>Modified</Th>
                 <Th style={{ textAlign: "right" }}>Actions</Th>
               </Tr>

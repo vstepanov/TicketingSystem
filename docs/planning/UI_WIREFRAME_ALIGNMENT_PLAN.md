@@ -17,7 +17,7 @@ Each step has a status box — update it as you go:
 Also update the **Wave status** table below when a wave changes state. Keep the
 "Last updated" line current.
 
-**Last updated:** 2026-07-01 · **Overall:** 4 / 5 waves complete
+**Last updated:** 2026-07-01 · **Overall:** 5 / 5 waves complete
 
 ### Wave status
 
@@ -27,7 +27,7 @@ Also update the **Wave status** table below when a wave changes state. Keep the
 | 1 | Kanban Board | `01-kanban-board.png` | `[x]` done | Whole card is now the drag source (no visible handle); relative bottom-right timestamp; Search label; taller cards. Header/nav/columns/controls already matched. |
 | 2 | Auth flow (login / signup / verify) | `02-auth-flow.png` | `[x]` done | Removed "TICKET TRACKER" eyebrow from AuthCard; circular checkmark on verify success; centered "Account not verified?" + full-width outlined Resend on login; full-width "Continue to login". Copy/labels/links already matched. |
 | 3 | Ticket details | `03-ticket-details.png` | `[x]` done | Back link → "← Back to {team name}" (resolved from teams list) linking `/board?teamId=…`; meta line in a gray bar with month-name UTC timestamps; larger 28px bold title; form row1 = Team·Type·State (3-col) with Epic full-width below; comment cards gray-filled; Post comment bottom-right. Header Delete/Save already top-right. |
-| 4 | Team management | `04-team-management.png` | `[ ]` pending | |
+| 4 | Team management | `04-team-management.png` | `[x]` done | Tickets/Epics now plain centered numbers (pills removed) with centered headers; Modified uses relative time (`formatRelative`); Create-team field gains placeholder "e.g. Platform Engineering". Header, title-case headers, disabled-Delete + helper line already matched. |
 | 5 | Epic management | `05-epic-management.png` | `[ ]` pending | |
 
 ### Verification checklist (run at the end of each wave)
@@ -173,19 +173,27 @@ Files: `src/ui/tickets/TicketDetailScreen.tsx`, `TicketForm.tsx`,
 
 Files: `src/ui/teams/TeamsScreen.tsx`, `TeamRow.tsx`, `CreateTeamPanel.tsx`.
 
-- `[ ]` **4.1 Header.** Confirm large "Teams" title + caption "All verified users
-  can view and manage all teams." + black "+ Create team" button top-right.
-- `[ ]` **4.2 Table headers.** Apply title-case headers (Wave 0.2).
-- `[ ]` **4.3 Count columns.** Render Tickets / Epics as plain centered numbers
-  (Wave 0.3) rather than left-aligned pills, per mockup.
-- `[ ]` **4.4 Modified column.** Use relative time — "Today 12:40", "Yesterday",
-  "Jun 20" (Wave 0.1).
-- `[ ]` **4.5 Delete disabled state.** Confirm disabled Delete renders as a grayed
-  outlined button (mockup) with the helper line
-  "Delete is disabled while a team contains tickets or epics."
-- `[ ]` **4.6 Create-team panel.** Style `CreateTeamPanel` as the distinct card in
-  the mockup: "Create team" heading, "Team name" label, placeholder
-  "e.g. Platform Engineering", black "Create" button.
+- `[!]` **4.1 Header.** Already matched — large "Teams" title + caption "All
+  verified users can view and manage all teams." + black "+ Create team" button
+  sit in the top-right header row. No change.
+- `[!]` **4.2 Table headers.** Already matched — after Wave 0.2 removed the global
+  uppercase, the screen's authored literals ("Name", "Tickets", "Epics",
+  "Modified", "Actions") render title-case. No change.
+- `[x]` **4.3 Count columns.** Removed the `<Pill>` wrappers around
+  `team.ticketCount` / `team.epicCount` in `TeamRow.tsx`, rendering plain numbers
+  in `Td align="center"`; the matching `Th align="center"` was added in
+  `TeamsScreen.tsx` so headers and data align.
+- `[x]` **4.4 Modified column.** Swapped `formatCompactUtc` → `formatRelative`
+  (imported from `@/ui/format-time`) so Modified renders "Today HH:MM" /
+  "Yesterday" / "Jun 20".
+- `[!]` **4.5 Delete disabled state.** Already matched — the secondary `Button`
+  dims when `disabled` (canDelete === false) with the explanatory `title`, and the
+  helper line "Delete is disabled while a team contains tickets or epics." is
+  rendered below the table. No change.
+- `[x]` **4.6 Create-team panel.** `CreateTeamPanel` already had the bordered white
+  card, "Create team" heading, "Team name" label and black "Create" button; added
+  the missing placeholder "e.g. Platform Engineering" to the field. Behavior
+  (create mutation, validation, onDone) preserved.
 
 ---
 

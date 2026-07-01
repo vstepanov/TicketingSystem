@@ -3,8 +3,9 @@
 /**
  * TeamRow (plan §5.10 wireframe-4) — one row of the Teams table.
  *
- * Displays name, ticket & epic counts (as {@link Pill}s), the Modified timestamp
- * (UTC), and the Edit / Delete actions:
+ * Displays name, ticket & epic counts (plain centered numbers), the Modified
+ * timestamp (relative — "Today 12:40" / "Yesterday" / "Jun 20"), and the
+ * Edit / Delete actions:
  *   - Edit toggles an in-place rename form (PATCH). 409 → "A team with that name
  *     already exists."; 404 → the team no longer exists (toast + refetch).
  *   - Delete is DISABLED when `canDelete === false` (the team has tickets or
@@ -15,9 +16,8 @@ import { useState, type CSSProperties, type FormEvent } from "react";
 
 import { Button } from "@/ui/Button";
 import { TextField } from "@/ui/TextField";
-import { Pill } from "@/ui/Pill";
 import { Td, Tr } from "@/ui/Table";
-import { formatCompactUtc } from "@/ui/format-time";
+import { formatRelative } from "@/ui/format-time";
 import { useToast } from "@/ui/Toast";
 import { isApiError } from "@/lib/api-client";
 import { useRenameTeam, type Team } from "./use-teams";
@@ -135,14 +135,10 @@ export function TeamRow({
           <span style={{ fontWeight: 500 }}>{team.name}</span>
         )}
       </Td>
-      <Td>
-        <Pill>{team.ticketCount}</Pill>
-      </Td>
-      <Td>
-        <Pill>{team.epicCount}</Pill>
-      </Td>
+      <Td align="center">{team.ticketCount}</Td>
+      <Td align="center">{team.epicCount}</Td>
       <Td style={{ color: "var(--color-text-muted)", fontSize: "var(--text-sm)" }}>
-        {formatCompactUtc(team.modifiedAt)}
+        {formatRelative(team.modifiedAt)}
       </Td>
       <Td>
         {!editing && (
