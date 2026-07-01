@@ -23,11 +23,18 @@ test("a failed state PATCH returns the card to its original column", async ({
   const team = await createTeam(page);
   await createTicket(page, team, TICKET_TITLE);
 
-  await page.goto("/board");
-  await page.getByLabel("Team").selectOption({ label: team });
-
   const newColumn = page.getByRole("region", { name: /^New column$/i });
-  await expect(newColumn.getByText(TICKET_TITLE)).toBeVisible();
+  // Reload the board until the just-created card is present. A single board fetch
+  // is cached for staleTime (30s) and won't re-fetch on its own, so if the very
+  // first fetch races the create's commit the card would never appear within a
+  // plain 5s assertion. Re-navigating forces a fresh fetch until it shows.
+  await expect(async () => {
+    await page.goto("/board");
+    await page.getByLabel("Team").selectOption({ label: team });
+    await expect(newColumn.getByText(TICKET_TITLE)).toBeVisible({
+      timeout: 3000,
+    });
+  }).toPass({ timeout: 20_000 });
 
   // Force every state update to fail.
   await page.route("**/api/tickets/*/state", (route) =>
