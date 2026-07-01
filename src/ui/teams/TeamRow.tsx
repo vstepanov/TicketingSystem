@@ -17,6 +17,7 @@ import { Button } from "@/ui/Button";
 import { TextField } from "@/ui/TextField";
 import { Pill } from "@/ui/Pill";
 import { Td, Tr } from "@/ui/Table";
+import { formatCompactUtc } from "@/ui/format-time";
 import { useToast } from "@/ui/Toast";
 import { isApiError } from "@/lib/api-client";
 import { useRenameTeam, type Team } from "./use-teams";
@@ -36,15 +37,6 @@ const RENAME_FORM_STYLE: CSSProperties = {
 const DELETE_DISABLED_HINT =
   "Delete is disabled while a team contains tickets or epics.";
 const DUPLICATE_MESSAGE = "A team with that name already exists.";
-
-/** Serialize an ISO timestamp to a compact UTC display (plan §5.10, all UTC). */
-function formatUtc(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return iso;
-  }
-  return `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
-}
 
 export function TeamRow({
   team,
@@ -150,7 +142,7 @@ export function TeamRow({
         <Pill>{team.epicCount}</Pill>
       </Td>
       <Td style={{ color: "var(--color-text-muted)", fontSize: "var(--text-sm)" }}>
-        {formatUtc(team.modifiedAt)}
+        {formatCompactUtc(team.modifiedAt)}
       </Td>
       <Td>
         {!editing && (

@@ -17,13 +17,13 @@ Each step has a status box — update it as you go:
 Also update the **Wave status** table below when a wave changes state. Keep the
 "Last updated" line current.
 
-**Last updated:** 2026-07-01 · **Overall:** 0 / 5 waves complete
+**Last updated:** 2026-07-01 · **Overall:** 1 / 5 waves complete
 
 ### Wave status
 
 | Wave | View | Mockup | Status | Notes |
 |------|------|--------|--------|-------|
-| 0 | Shared design-system fixes | (all) | `[ ]` pending | Do first — several views depend on it |
+| 0 | Shared design-system fixes | (all) | `[x]` done | Consolidated time helpers + Table capabilities; no visible change |
 | 1 | Kanban Board | `01-kanban-board.png` | `[ ]` pending | |
 | 2 | Auth flow (login / signup / verify) | `02-auth-flow.png` | `[ ]` pending | |
 | 3 | Ticket details | `03-ticket-details.png` | `[ ]` pending | |
@@ -45,26 +45,28 @@ These are reused across views; fixing them once removes duplicated deviations.
 Files: `app/globals.css`, `src/ui/Table.tsx`, `src/ui/Pill.tsx`, plus the three
 duplicated `formatUtc` helpers.
 
-- `[ ]` **0.1 Relative-time helper.** Mockups use relative timestamps
-  ("2h ago", "1d ago", "Today 12:40", "Yesterday", "Jun 20"). Today each
-  `formatUtc` renders absolute UTC. Create one shared `formatRelative(iso)` (and
-  keep an absolute variant for the ticket meta line) in a single util, e.g.
-  `src/ui/format-time.ts`, and delete the copies in
-  `TicketCard.tsx`, `teams/TeamRow.tsx`, `epics/EpicRow.tsx`, `tickets/use-ticket.ts`.
-- `[ ]` **0.2 Table header casing.** `Table.tsx` `TH_STYLE` uppercases headers;
-  mockups (Teams/Epics) show title-case headers ("Name", "Tickets", "Epics",
-  "Modified", "Actions"). Remove `textTransform: "uppercase"` (or make it a prop)
-  and match weight/color.
-- `[ ]` **0.3 Numeric cell alignment.** Count columns (Tickets, Epics) render
-  left-aligned pills; mockups show plain centered numbers. Decide: plain numbers
-  centered (matches mockup) vs pills. Add a `Td align="center"` option to
-  `Table.tsx` and apply on numeric columns.
-- `[ ]` **0.4 Pill / count chip.** Board column count in the mockup is a rounded
-  gray chip on the right of the header — confirm `Pill` sizing/shape matches
-  (mockup chip looks slightly larger/rounder). Adjust `Pill.tsx` if needed.
-- `[ ]` **0.5 Confirm token parity.** Spot-check spacing/radius/shadow tokens in
-  `globals.css` against the mockups (card radius, borders). No change expected;
-  document any intentional differences.
+- `[x]` **0.1 Shared time helper.** Created `src/ui/format-time.ts` exporting
+  three pure functions: `formatCompactUtc` (`YYYY-MM-DD HH:MM UTC`, preserves the
+  previous visible output), `formatRelative` ("2h ago"/"Yesterday"/"Jun 20", for
+  later waves) and `formatMonthDayUtc` (`Mon D, HH:MM UTC`, ticket meta line, for
+  a later wave). Deleted the duplicated local `formatUtc` copies in
+  `TicketCard.tsx`, `teams/TeamRow.tsx`, `epics/EpicRow.tsx` and the exported one
+  in `tickets/use-ticket.ts` (now re-exports `formatCompactUtc as formatUtc` so
+  `TicketDetailScreen`/`CommentsPanel` imports keep working). No visible change —
+  `formatRelative`/`formatMonthDayUtc` are wired by later waves.
+- `[x]` **0.2 Table header casing.** Removed `textTransform: "uppercase"` from
+  `Table.tsx` `TH_STYLE`; weight/color/letter-spacing kept. Headers now render
+  title-case as authored.
+- `[x]` **0.3 Numeric cell alignment.** Added an optional
+  `align?: "left" | "center" | "right"` prop to both `Td` and `Th` in
+  `Table.tsx` (defaults to left). Capability only — not yet applied to any
+  column (that happens in later waves).
+- `[!]` **0.4 Pill / count chip.** No change needed — `Pill.tsx` is already a
+  rounded gray chip (`borderRadius: 999px`, `--color-surface-muted`). Fine-tuning
+  of chip size deferred to the board wave if the mockup overlay shows a delta.
+- `[!]` **0.5 Confirm token parity.** No change needed — spot-checked
+  `globals.css` radius (`4/6/10px`), spacing (`4→32px`) and shadow tokens; all
+  sensible and consistent with the mockups.
 
 ---
 
