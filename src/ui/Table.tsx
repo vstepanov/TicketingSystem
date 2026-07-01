@@ -24,17 +24,21 @@ const TABLE_STYLE: CSSProperties = {
   fontSize: "var(--text-base)",
 };
 
+// Headers render title-case as authored (plan §0.2 — mockups show "Name",
+// "Tickets", etc.), so no `textTransform`. Weight/color/letter-spacing stay.
 const TH_STYLE: CSSProperties = {
   textAlign: "left",
   padding: "var(--space-3) var(--space-4)",
   fontSize: "var(--text-sm)",
   fontWeight: 600,
   color: "var(--color-text-muted)",
-  textTransform: "uppercase",
   letterSpacing: "0.02em",
   background: "var(--color-surface-muted)",
   borderBottom: "1px solid var(--color-border)",
 };
+
+/** Optional horizontal alignment for a header/cell (plan §0.3). */
+export type CellAlign = "left" | "center" | "right";
 
 const TD_STYLE: CSSProperties = {
   padding: "var(--space-3) var(--space-4)",
@@ -61,11 +65,14 @@ export function Tr({ children, style }: { children: ReactNode; style?: CSSProper
 
 export interface ThProps extends ThHTMLAttributes<HTMLTableCellElement> {
   children?: ReactNode;
+  /** Horizontal alignment (plan §0.3). Defaults to left (current behavior). */
+  align?: CellAlign;
 }
 
-export function Th({ children, style, scope = "col", ...rest }: ThProps) {
+export function Th({ children, style, scope = "col", align, ...rest }: ThProps) {
+  const alignStyle: CSSProperties = align ? { textAlign: align } : {};
   return (
-    <th scope={scope} style={{ ...TH_STYLE, ...style }} {...rest}>
+    <th scope={scope} style={{ ...TH_STYLE, ...alignStyle, ...style }} {...rest}>
       {children}
     </th>
   );
@@ -73,11 +80,14 @@ export function Th({ children, style, scope = "col", ...rest }: ThProps) {
 
 export interface TdProps extends TdHTMLAttributes<HTMLTableCellElement> {
   children?: ReactNode;
+  /** Horizontal alignment (plan §0.3). Defaults to left (current behavior). */
+  align?: CellAlign;
 }
 
-export function Td({ children, style, ...rest }: TdProps) {
+export function Td({ children, style, align, ...rest }: TdProps) {
+  const alignStyle: CSSProperties = align ? { textAlign: align } : {};
   return (
-    <td style={{ ...TD_STYLE, ...style }} {...rest}>
+    <td style={{ ...TD_STYLE, ...alignStyle, ...style }} {...rest}>
       {children}
     </td>
   );

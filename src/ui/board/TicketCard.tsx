@@ -19,6 +19,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties } from "react";
 
+import { formatCompactUtc } from "@/ui/format-time";
 import type { BoardCard, TicketType } from "./use-board";
 
 const CARD_STYLE: CSSProperties = {
@@ -87,15 +88,6 @@ const TYPE_LABEL: Record<TicketType, string> = {
   fix: "Fix",
 };
 
-/** Serialize an ISO timestamp to a compact UTC display (plan §5, all UTC). */
-function formatUtc(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return iso;
-  }
-  return `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
-}
-
 export function TicketCard({ card }: { card: BoardCard }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: card.id, data: { type: "card" } });
@@ -124,7 +116,7 @@ export function TicketCard({ card }: { card: BoardCard }) {
         {card.title}
       </Link>
       {card.epicTitle && <div style={META_STYLE}>Epic: {card.epicTitle}</div>}
-      <div style={META_STYLE}>{formatUtc(card.modifiedAt)}</div>
+      <div style={META_STYLE}>{formatCompactUtc(card.modifiedAt)}</div>
     </div>
   );
 }

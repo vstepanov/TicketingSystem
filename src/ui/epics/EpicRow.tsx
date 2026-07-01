@@ -16,6 +16,7 @@ import type { CSSProperties } from "react";
 import { Button } from "@/ui/Button";
 import { Pill } from "@/ui/Pill";
 import { Td, Tr } from "@/ui/Table";
+import { formatCompactUtc } from "@/ui/format-time";
 import type { Epic } from "./use-epics";
 
 const ACTIONS_STYLE: CSSProperties = {
@@ -41,15 +42,6 @@ const DESCRIPTION_STYLE: CSSProperties = {
 const DELETE_DISABLED_HINT =
   "Delete is disabled while tickets reference the epic.";
 
-/** Serialize an ISO timestamp to a compact UTC display (plan §5.11, all UTC). */
-function formatUtc(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return iso;
-  }
-  return `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
-}
-
 export function EpicRow({
   epic,
   onRequestEdit,
@@ -73,7 +65,7 @@ export function EpicRow({
         <Pill>{epic.ticketCount}</Pill>
       </Td>
       <Td style={{ color: "var(--color-text-muted)", fontSize: "var(--text-sm)" }}>
-        {formatUtc(epic.modifiedAt)}
+        {formatCompactUtc(epic.modifiedAt)}
       </Td>
       <Td>
         <div style={ACTIONS_STYLE}>

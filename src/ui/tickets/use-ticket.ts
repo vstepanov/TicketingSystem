@@ -278,17 +278,11 @@ export function usePostComment(): UseMutationResult<
   });
 }
 
-/** Format an ISO-8601 timestamp as a compact, explicit UTC string (§5.8). */
-export function formatUtc(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return iso;
-  }
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const y = date.getUTCFullYear();
-  const mo = pad(date.getUTCMonth() + 1);
-  const d = pad(date.getUTCDate());
-  const h = pad(date.getUTCHours());
-  const mi = pad(date.getUTCMinutes());
-  return `${y}-${mo}-${d} ${h}:${mi} UTC`;
-}
+/**
+ * Format an ISO-8601 timestamp as a compact, explicit UTC string (§5.8).
+ *
+ * The implementation now lives in the shared `../format-time` module (plan
+ * §0.1). Re-exported here as `formatUtc` so existing importers
+ * (TicketDetailScreen, CommentsPanel) keep working with no visible change.
+ */
+export { formatCompactUtc as formatUtc } from "../format-time";
