@@ -190,10 +190,13 @@ Files: `src/ui/teams/TeamsScreen.tsx`, `TeamRow.tsx`, `CreateTeamPanel.tsx`.
   dims when `disabled` (canDelete === false) with the explanatory `title`, and the
   helper line "Delete is disabled while a team contains tickets or epics." is
   rendered below the table. No change.
-- `[x]` **4.6 Create-team panel.** `CreateTeamPanel` already had the bordered white
-  card, "Create team" heading, "Team name" label and black "Create" button; added
-  the missing placeholder "e.g. Platform Engineering" to the field. Behavior
-  (create mutation, validation, onDone) preserved.
+- `[x]` **4.6 Create-team panel.** The create form is now a centered **modal
+  popup** (rendered via the shared `Dialog`, which supplies the card, the
+  "Create team" heading and a focus trap), matching the floating card in the
+  mockup. `CreateTeamPanel` is chromeless (Team-name field + black "Create"
+  button, placeholder "e.g. Platform Engineering"); the "+ Create team" button
+  opens it, Escape/backdrop/success closes it. Behavior (create mutation,
+  validation, onDone) preserved.
 
 ---
 

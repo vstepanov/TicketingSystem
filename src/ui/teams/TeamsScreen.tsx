@@ -21,7 +21,7 @@ import { useState, type CSSProperties } from "react";
 import { Button } from "@/ui/Button";
 import { Spinner } from "@/ui/Spinner";
 import { EmptyState } from "@/ui/EmptyState";
-import { ConfirmDialog } from "@/ui/Dialog";
+import { ConfirmDialog, Dialog } from "@/ui/Dialog";
 import { Table, TBody, THead, Th, Tr } from "@/ui/Table";
 import { useToast } from "@/ui/Toast";
 import { isApiError } from "@/lib/api-client";
@@ -116,11 +116,13 @@ export function TeamsScreen() {
         <Button onClick={() => setShowCreate((v) => !v)}>+ Create team</Button>
       </div>
 
-      {showCreate && (
-        <div style={{ marginBottom: "var(--space-4)" }}>
-          <CreateTeamPanel onDone={() => setShowCreate(false)} />
-        </div>
-      )}
+      <Dialog
+        open={showCreate}
+        title="Create team"
+        onClose={() => setShowCreate(false)}
+      >
+        <CreateTeamPanel onDone={() => setShowCreate(false)} />
+      </Dialog>
 
       {teamsQuery.isLoading ? (
         <div style={LOADING_STYLE} role="status" aria-live="polite">

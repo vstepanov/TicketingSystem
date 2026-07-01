@@ -1,7 +1,11 @@
 "use client";
 
 /**
- * CreateTeamPanel (plan §5.10 wireframe-4) — inline "Create team" panel.
+ * CreateTeamPanel (plan §5.10 wireframe-4) — the "Create team" form body.
+ *
+ * Rendered inside the Teams screen's {@link Dialog} popup (the dialog supplies
+ * the card chrome + "Create team" heading + focus trap), so this component is
+ * intentionally chromeless: just the Team-name field + Create button.
  *
  * A single Team-name field + Create button. On submit it calls the create
  * mutation; on success it clears the field, fires a success toast, and lets the
@@ -20,20 +24,10 @@ import { useToast } from "@/ui/Toast";
 import { isApiError } from "@/lib/api-client";
 import { useCreateTeam } from "./use-teams";
 
-const PANEL_STYLE: CSSProperties = {
+const FORM_STYLE: CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: "var(--space-3)",
-  padding: "var(--space-4)",
-  background: "var(--color-surface)",
-  border: "1px solid var(--color-border)",
-  borderRadius: "var(--radius-lg)",
-};
-
-const HEADING_STYLE: CSSProperties = {
-  margin: 0,
-  fontSize: "var(--text-lg)",
-  fontWeight: 600,
 };
 
 const ROW_STYLE: CSSProperties = {
@@ -81,8 +75,7 @@ export function CreateTeamPanel({ onDone }: { onDone?: () => void }) {
   }
 
   return (
-    <form style={PANEL_STYLE} onSubmit={handleSubmit} noValidate>
-      <h2 style={HEADING_STYLE}>Create team</h2>
+    <form style={FORM_STYLE} onSubmit={handleSubmit} noValidate>
       <div style={ROW_STYLE}>
         <div style={{ flex: 1 }}>
           <TextField
