@@ -125,6 +125,22 @@ def main() -> int:
         help="actually send a test email (otherwise just connect/handshake)",
     )
     parser.add_argument(
+        "--port",
+        type=int,
+        default=None,
+        help="override SMTP_PORT (handy to test 25 / 465 / 587 without editing .env)",
+    )
+    parser.add_argument(
+        "--probe",
+        action="store_true",
+        help="just TCP-probe the common SMTP ports (25, 465, 587, 2525) and exit",
+    )
+    parser.add_argument(
+        "--require-tls",
+        action="store_true",
+        help="fail if STARTTLS is not offered (default: continue in plaintext with a warning)",
+    )
+    parser.add_argument(
         "--timeout",
         type=float,
         default=15.0,
@@ -158,10 +174,34 @@ def main() -> int:
     if not mail_from:
         die("SMTP_FROM is not set.")
     try:
-        port = int(port_raw or "587")
+        port = args.port if args.port is not None else int(port_raw or "587")
     except ValueError:
         die(f"SMTP_PORT is not an integer: {port_raw!r}")
         return 1
+
+    # ---- optional: probe common SMTP ports and exit ------------------------ #
+    if args.probe:
+        step(f"Probing common SMTP ports on {host}")
+        any_open = False
+        for p in (25, 587, 465, 2525):
+            try:
+                with socket.create_connection((host, p), timeout=min(args.timeout, 6)):
+                    ok(f"port {p:>4} OPEN")
+                    any_open = True
+            except (socket.timeout, TimeoutError):
+                info(f"port {p:>4} timed out (filtered/blocked)")
+            except OSError as e:
+                info(f"port {p:>4} closed ({e.strerror or e})")
+        if not any_open:
+            die("no common SMTP port is reachable — likely a firewall/VPN issue.")
+        print(
+            _c(
+                "33",
+                "\nSet SMTP_PORT in .env to an OPEN port above (unauthenticated "
+                "relays are usually 25), then re-run without --probe.",
+            )
+        )
+        return 0
 
     use_auth = bool(user and password)  # mirror the app: auth only if BOTH set
     implicit_tls = port == 465  # 465 = implicit TLS; otherwise STARTTLS
@@ -218,11 +258,20 @@ def main() -> int:
 
         if not implicit_tls:
             step("STARTTLS")
-            if not server.has_extn("starttls"):
-                die("Server does not advertise STARTTLS.")
-            server.starttls(context=context)
-            server.ehlo()  # re-EHLO after TLS
-            ok("TLS negotiated")
+            if server.has_extn("starttls"):
+                server.starttls(context=context)
+                server.ehlo()  # re-EHLO after TLS
+                ok("TLS negotiated")
+            elif args.require_tls:
+                die("Server does not advertise STARTTLS (and --require-tls was set).")
+            else:
+                info(
+                    _c(
+                        "33",
+                        "server does not advertise STARTTLS — continuing in PLAINTEXT "
+                        "(normal for an internal port-25 relay on a trusted network).",
+                    )
+                )
         else:
             ok("using implicit TLS (port 465)")
 
