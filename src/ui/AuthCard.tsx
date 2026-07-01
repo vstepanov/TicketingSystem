@@ -4,8 +4,8 @@
  * AuthCard (plan §5.2, wireframe 2) — centered card shell for the public auth
  * screens (signup / login / verify result).
  *
- * Renders a vertically & horizontally centered surface with a brand line, a
- * title, an optional subtitle, and the screen's body. Monochrome tokens (§5.1).
+ * Renders a vertically & horizontally centered surface with a title, an
+ * optional subtitle, and the screen's body. Monochrome tokens (§5.1).
  * The wrapper is a `<main>` landmark so the public pages have a clear content
  * region (the authenticated shell provides its own landmark elsewhere).
  */
@@ -28,14 +28,6 @@ const CARD_STYLE: CSSProperties = {
   borderRadius: "var(--radius-lg)",
   boxShadow: "var(--shadow-md)",
   padding: "var(--space-6)",
-};
-
-const BRAND_STYLE: CSSProperties = {
-  fontSize: "var(--text-sm)",
-  fontWeight: 700,
-  letterSpacing: "0.08em",
-  color: "var(--color-text-muted)",
-  marginBottom: "var(--space-4)",
 };
 
 const TITLE_STYLE: CSSProperties = {
@@ -61,7 +53,6 @@ export function AuthCard({ title, subtitle, children }: AuthCardProps) {
   return (
     <main style={WRAP_STYLE}>
       <div style={CARD_STYLE}>
-        <div style={BRAND_STYLE}>TICKET TRACKER</div>
         <h1 style={TITLE_STYLE}>{title}</h1>
         {subtitle ? <p style={SUBTITLE_STYLE}>{subtitle}</p> : null}
         {children}

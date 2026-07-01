@@ -133,12 +133,34 @@ export function VerifyResult() {
   if (status === "success") {
     return (
       <AuthCard title="Email verified" subtitle="Your account is ready to use.">
-        <p role="status" style={{ margin: 0, color: "var(--color-text)" }}>
-          <span aria-hidden="true">✓ </span>
+        <div
+          aria-hidden="true"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            margin: "0 auto var(--space-4)",
+            borderRadius: "999px",
+            background: "var(--color-surface-muted)",
+            color: "var(--color-text)",
+            fontSize: "32px",
+            fontWeight: 700,
+          }}
+        >
+          ✓
+        </div>
+        <p
+          role="status"
+          style={{ margin: "0 0 var(--space-5)", textAlign: "center", color: "var(--color-text)" }}
+        >
           Your email has been verified.
         </p>
-        <Link href="/login" style={{ ...LINK_STYLE, marginTop: "var(--space-5)" }}>
-          <Button type="button">Continue to login</Button>
+        <Link href="/login" style={{ ...LINK_STYLE, marginTop: 0, display: "block" }}>
+          <Button type="button" style={{ width: "100%" }}>
+            Continue to login
+          </Button>
         </Link>
       </AuthCard>
     );
