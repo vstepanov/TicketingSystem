@@ -195,9 +195,19 @@ export function useCreateTicket(): UseMutationResult<
   unknown,
   CreateTicketInput
 > {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateTicketInput) =>
       api.post<CreatedTicket>("/api/tickets", input),
+    // Invalidate the new ticket's board so it appears without waiting for
+    // staleTime to elapse (§5.3 "Success: toast + cache invalidation/refetch").
+    // The board key is ["board", teamId, ...filters]; the ["board", teamId]
+    // prefix matches every active filter combination for that team.
+    onSuccess: (_created, input) => {
+      void queryClient.invalidateQueries({
+        queryKey: ["board", input.teamId],
+      });
+    },
   });
 }
 

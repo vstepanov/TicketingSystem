@@ -15,7 +15,7 @@
  * output isn't present it falls back to `next start`.
  */
 import { spawn, type ChildProcess } from "node:child_process";
-import { existsSync } from "node:fs";
+import { cpSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 
@@ -77,6 +77,26 @@ export async function startApp(
 
   const standalone = join(process.cwd(), ".next", "standalone", "server.js");
   const useStandalone = existsSync(standalone);
+
+  // Next's `output: "standalone"` does NOT copy `.next/static` or `public/`
+  // into the standalone bundle — the production Docker image copies them in
+  // itself (see Dockerfile). Without that copy the standalone server serves
+  // HTML but every `/_next/static/*` chunk 404s, so the client never hydrates
+  // (forms don't submit, verify never leaves its "Verifying…" state, etc.).
+  // Mirror the Dockerfile here so the E2E run is self-contained.
+  if (useStandalone) {
+    const standaloneDir = join(process.cwd(), ".next", "standalone");
+    cpSync(
+      join(process.cwd(), ".next", "static"),
+      join(standaloneDir, ".next", "static"),
+      { recursive: true },
+    );
+    const publicDir = join(process.cwd(), "public");
+    if (existsSync(publicDir)) {
+      cpSync(publicDir, join(standaloneDir, "public"), { recursive: true });
+    }
+  }
+
   const command = useStandalone ? "node" : "npx";
   const args = useStandalone
     ? [standalone]

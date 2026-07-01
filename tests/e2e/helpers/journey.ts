@@ -78,4 +78,9 @@ export async function createTicket(
   await page.getByLabel("Title").fill(title);
   await page.getByLabel("Body").fill(`Body for ${title}`);
   await page.getByRole("button", { name: /^create$/i }).click();
+  // Wait for the create to actually finish before returning. On success the
+  // screen redirects to /tickets/{id}; without this wait a caller that does a
+  // full navigation (e.g. page.goto) can abort the in-flight POST, so the
+  // ticket is never persisted.
+  await page.waitForURL(/\/tickets\/(?!new$)[^/]+$/);
 }

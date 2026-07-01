@@ -33,9 +33,11 @@ test("login with unknown credentials shows a generic error", async ({
   await page.getByLabel("Password", { exact: true }).fill("wrong-password-123");
   await page.getByRole("button", { name: /log in/i }).click();
 
-  await expect(page.getByRole("alert")).toContainText(
-    /incorrect email or password/i,
-  );
+  // Scope to the form's alert: Next.js renders an always-present empty
+  // route-announcer with role="alert" too, which would break a bare getByRole.
+  await expect(
+    page.getByRole("form", { name: /log in/i }).getByRole("alert"),
+  ).toContainText(/incorrect email or password/i);
   // Still on the login screen (no redirect on failure).
   await expect(page).toHaveURL(/\/login/);
 });

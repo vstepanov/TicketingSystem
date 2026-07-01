@@ -77,13 +77,19 @@ test("signup → verify → login → team → epic → ticket → drag → refr
   await page.getByRole("link", { name: /^epics$/i }).click();
   await expect(page).toHaveURL(/\/epics/);
   await page.getByLabel("Team").selectOption({ label: TEAM_NAME });
-  await page.getByRole("button", { name: /\+ create epic/i }).click();
+  // With no epics yet there are two "+ Create epic" buttons (the header toggle
+  // and the empty-state action). Target the header one, which is always present.
+  await page.getByRole("button", { name: /\+ create epic/i }).first().click();
   await page.getByLabel("Title").fill(EPIC_TITLE);
   await page.getByRole("button", { name: /^create$/i }).click();
   await expect(page.getByRole("cell", { name: EPIC_TITLE })).toBeVisible();
 
   // --- 6. Create a ticket --------------------------------------------------
   await page.getByRole("link", { name: /^board$/i }).click();
+  // Wait for the board route to be active before touching "Team": the Epics page
+  // also has a "Team" combobox, and selecting it mid-navigation would re-navigate
+  // within /epics and cancel the pending board navigation.
+  await expect(page).toHaveURL(/\/board/);
   await page.getByLabel("Team").selectOption({ label: TEAM_NAME });
   await page.getByRole("link", { name: /\+ new ticket/i }).click();
   await expect(page).toHaveURL(/\/tickets\/new/);
@@ -94,9 +100,13 @@ test("signup → verify → login → team → epic → ticket → drag → refr
   await page.getByLabel("Title").fill(TICKET_TITLE);
   await page.getByLabel("Body").fill(TICKET_BODY);
   await page.getByRole("button", { name: /^create$/i }).click();
+  // On success the create screen redirects to /tickets/{id}; wait for it so the
+  // create has committed (and we're not still on /tickets/new) before leaving.
+  await expect(page).toHaveURL(/\/tickets\/(?!new$)[^/]+$/);
 
-  // Back on the board (or ticket detail) — return to the board to drag.
+  // Return to the board to drag.
   await page.getByRole("link", { name: /^board$/i }).click();
+  await expect(page).toHaveURL(/\/board/);
   await page.getByLabel("Team").selectOption({ label: TEAM_NAME });
 
   // The new ticket starts in the NEW column.
