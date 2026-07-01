@@ -1,0 +1,101 @@
+/**
+ * Global styles & design tokens (plan §5.1).
+ *
+ * Neutral / monochrome palette matching the wireframes: white surfaces,
+ * near-black primary buttons, gray secondary. Tokens are exposed as CSS custom
+ * properties on :root so every component can theme off a single source; the
+ * shell and shared components reference these instead of hard-coded colours.
+ */
+
+:root {
+  /* Surfaces */
+  --color-bg: #f7f7f8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2f2f3;
+
+  /* Text */
+  --color-text: #17181a;
+  --color-text-muted: #6b6f76;
+  --color-text-inverse: #ffffff;
+
+  /* Borders */
+  --color-border: #e2e3e6;
+  --color-border-strong: #c9cbcf;
+
+  /* Primary (near-black) */
+  --color-primary: #17181a;
+  --color-primary-hover: #303236;
+  --color-primary-text: #ffffff;
+
+  /* Secondary (gray, outlined) */
+  --color-secondary-bg: #ffffff;
+  --color-secondary-hover: #f2f2f3;
+  --color-secondary-text: #17181a;
+  --color-secondary-border: #c9cbcf;
+
+  /* Feedback */
+  --color-danger: #b42318;
+  --color-success: #067647;
+
+  /* Focus ring */
+  --color-focus: #2563eb;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Typography */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(23, 24, 26, 0.06);
+  --shadow-md: 0 4px 12px rgba(23, 24, 26, 0.1);
+
+  /* Layout */
+  --header-height: 56px;
+  --content-max-width: 1200px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
