@@ -14,10 +14,17 @@ import type { CSSProperties } from "react";
 interface NavItem {
   label: string;
   href: string;
+  /**
+   * Route prefixes that should also highlight this tab. Defaults to `[href]`.
+   * Board owns the ticket routes (`/tickets/new`, `/tickets/{id}`) — they are
+   * reached from the board and have no tab of their own — so Board stays active
+   * there instead of leaving every tab deselected.
+   */
+  activePrefixes?: string[];
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Board", href: "/board" },
+  { label: "Board", href: "/board", activePrefixes: ["/board", "/tickets"] },
   { label: "Teams", href: "/teams" },
   { label: "Epics", href: "/epics" },
 ];
@@ -47,9 +54,12 @@ const ACTIVE_LINK_STYLE: CSSProperties = {
   background: "var(--color-surface-muted)",
 };
 
-/** Is `href` the active route for `pathname`? Matches the tab's route prefix. */
-function isActive(pathname: string, href: string): boolean {
-  return pathname === href || pathname.startsWith(`${href}/`);
+/** Is `item` the active tab for `pathname`? Matches any of its route prefixes. */
+function isActive(pathname: string, item: NavItem): boolean {
+  const prefixes = item.activePrefixes ?? [item.href];
+  return prefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
 }
 
 export function NavTabs() {
@@ -59,7 +69,7 @@ export function NavTabs() {
     <nav aria-label="Primary">
       <ul style={LIST_STYLE}>
         {NAV_ITEMS.map((item) => {
-          const active = isActive(pathname, item.href);
+          const active = isActive(pathname, item);
           return (
             <li key={item.href}>
               <Link
