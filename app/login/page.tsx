@@ -13,7 +13,7 @@
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { api, isApiError } from "@/lib/api-client";
 import { validateRequired } from "@/lib/auth-validation";
@@ -48,6 +48,31 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Forward already-authenticated visitors to the board instead of showing the
+  // form. An anonymous `GET /api/auth/me` returns 401 without touching the DB.
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        await api.get("/api/auth/me");
+        if (!cancelled) {
+          router.replace("/board");
+          return;
+        }
+      } catch {
+        // Anonymous (401) or unreachable — fall through to the login form.
+      }
+      if (!cancelled) {
+        setCheckingSession(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
   // Revealed after a 403 ACCOUNT_NOT_VERIFIED.
   const [showResend, setShowResend] = useState(false);
@@ -108,6 +133,20 @@ export default function LoginPage() {
     } finally {
       setResending(false);
     }
+  }
+
+  if (checkingSession) {
+    return (
+      <AuthCard title="Log in" subtitle="Use your verified account.">
+        <div
+          role="status"
+          aria-label="Checking session"
+          style={{ display: "flex", justifyContent: "center", padding: "var(--space-6)" }}
+        >
+          <Spinner />
+        </div>
+      </AuthCard>
+    );
   }
 
   return (

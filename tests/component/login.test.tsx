@@ -51,8 +51,19 @@ function jsonResponse(status: number, body: unknown): Response {
   });
 }
 
+/** Anonymous session response for the on-mount `/api/auth/me` check. */
+function anonMe(url: string): Response | null {
+  if (url.endsWith("/api/auth/me")) {
+    return jsonResponse(401, {
+      error: { code: "UNAUTHENTICATED", message: "No session" },
+    });
+  }
+  return null;
+}
+
 async function fillCreds(user: ReturnType<typeof userEvent.setup>) {
-  await user.type(screen.getByLabelText("Email"), "alice@example.com");
+  // The form renders only after the on-mount session check resolves (anon).
+  await user.type(await screen.findByLabelText("Email"), "alice@example.com");
   await user.type(screen.getByLabelText("Password"), "password123");
 }
 
@@ -69,6 +80,8 @@ afterEach(() => {
 describe("login errors", () => {
   it("shows a generic message on 401 without revealing resend", async () => {
     stubFetch((url) => {
+      const me = anonMe(url);
+      if (me) return me;
       if (url.endsWith("/api/auth/login")) {
         return jsonResponse(401, {
           error: { code: "UNAUTHENTICATED", message: "Invalid credentials" },
@@ -95,6 +108,8 @@ describe("login errors", () => {
 describe("login unverified", () => {
   it("reveals the resend block on 403 and resends the email", async () => {
     const fetchMock = stubFetch((url) => {
+      const me = anonMe(url);
+      if (me) return me;
       if (url.endsWith("/api/auth/login")) {
         return jsonResponse(403, {
           error: {
@@ -136,6 +151,8 @@ describe("login unverified", () => {
 describe("login success", () => {
   it("redirects to /board on 200", async () => {
     stubFetch((url) => {
+      const me = anonMe(url);
+      if (me) return me;
       if (url.endsWith("/api/auth/login")) {
         return jsonResponse(200, { id: "u1", email: "alice@example.com" });
       }
@@ -150,5 +167,27 @@ describe("login success", () => {
     await waitFor(() => {
       expect(replace).toHaveBeenCalledWith("/board");
     });
+  });
+});
+
+describe("login when already authenticated", () => {
+  it("redirects to /board without showing the form", async () => {
+    stubFetch((url) => {
+      if (url.endsWith("/api/auth/me")) {
+        return jsonResponse(200, {
+          id: "u1",
+          email: "alice@example.com",
+          emailVerified: true,
+        });
+      }
+      throw new Error(`unexpected fetch: ${url}`);
+    });
+    render(<LoginPage />);
+
+    await waitFor(() => {
+      expect(replace).toHaveBeenCalledWith("/board");
+    });
+    // The login form was never shown to the authenticated visitor.
+    expect(screen.queryByLabelText("Email")).not.toBeInTheDocument();
   });
 });
