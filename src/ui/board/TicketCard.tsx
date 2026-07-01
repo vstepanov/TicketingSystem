@@ -8,36 +8,32 @@
  * detail route `/tickets/{id}` (built in S19; navigation is wired now, §5.7).
  *
  * Drag-and-drop: the card registers as a `@dnd-kit` draggable
- * ({@link useDraggable}). The drag handle attributes/listeners are spread onto a
- * dedicated handle button so the card link stays independently clickable and the
- * handle is keyboard-operable (Space/Enter to pick up, arrows to move, Space to
- * drop — see the board's KeyboardSensor). The handle carries an `aria-label`
- * naming the ticket so screen-reader announcements are meaningful.
+ * ({@link useDraggable}). The mockup shows no visible handle, so the drag
+ * attributes/listeners are spread onto the whole card container — the card IS the
+ * drag source. It carries an `aria-label` naming the ticket plus `tabIndex` so
+ * keyboard users can still pick it up/move it (Space to pick up, arrows to move,
+ * Space to drop — see the board's KeyboardSensor). The title is a `<Link>` to the
+ * detail route; the PointerSensor's 4px activation distance means a plain click
+ * still navigates rather than starting a drag.
  */
 import Link from "next/link";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties } from "react";
 
-import { formatCompactUtc } from "@/ui/format-time";
+import { formatRelative } from "@/ui/format-time";
 import type { BoardCard, TicketType } from "./use-board";
 
 const CARD_STYLE: CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: "var(--space-2)",
-  padding: "var(--space-3)",
+  gap: "var(--space-3)",
+  padding: "var(--space-4)",
   background: "var(--color-surface)",
   border: "1px solid var(--color-border)",
   borderRadius: "var(--radius-md)",
   boxShadow: "var(--shadow-sm)",
-};
-
-const TOP_ROW_STYLE: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: "var(--space-2)",
+  cursor: "grab",
 };
 
 const BADGE_STYLE: CSSProperties = {
@@ -54,21 +50,6 @@ const BADGE_STYLE: CSSProperties = {
   color: "var(--color-text)",
 };
 
-const HANDLE_STYLE: CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "22px",
-  height: "22px",
-  border: "1px solid var(--color-border)",
-  borderRadius: "var(--radius-sm)",
-  background: "var(--color-surface)",
-  color: "var(--color-text-muted)",
-  cursor: "grab",
-  fontFamily: "inherit",
-  lineHeight: 1,
-};
-
 const TITLE_STYLE: CSSProperties = {
   margin: 0,
   fontSize: "var(--text-base)",
@@ -80,6 +61,12 @@ const TITLE_STYLE: CSSProperties = {
 const META_STYLE: CSSProperties = {
   fontSize: "var(--text-sm)",
   color: "var(--color-text-muted)",
+};
+
+const TIMESTAMP_STYLE: CSSProperties = {
+  ...META_STYLE,
+  alignSelf: "flex-end",
+  textAlign: "right",
 };
 
 const TYPE_LABEL: Record<TicketType, string> = {
@@ -99,24 +86,20 @@ export function TicketCard({ card }: { card: BoardCard }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} data-testid={`card-${card.id}`}>
-      <div style={TOP_ROW_STYLE}>
-        <span style={BADGE_STYLE}>{TYPE_LABEL[card.type]}</span>
-        <button
-          type="button"
-          style={HANDLE_STYLE}
-          aria-label={`Move ticket: ${card.title}`}
-          {...attributes}
-          {...listeners}
-        >
-          ⠿
-        </button>
-      </div>
+    <div
+      ref={setNodeRef}
+      style={style}
+      data-testid={`card-${card.id}`}
+      {...attributes}
+      {...listeners}
+      aria-label={`Move ticket: ${card.title}`}
+    >
+      <span style={BADGE_STYLE}>{TYPE_LABEL[card.type]}</span>
       <Link href={`/tickets/${card.id}`} style={TITLE_STYLE}>
         {card.title}
       </Link>
       {card.epicTitle && <div style={META_STYLE}>Epic: {card.epicTitle}</div>}
-      <div style={META_STYLE}>{formatCompactUtc(card.modifiedAt)}</div>
+      <div style={TIMESTAMP_STYLE}>{formatRelative(card.modifiedAt)}</div>
     </div>
   );
 }

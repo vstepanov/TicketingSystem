@@ -17,14 +17,14 @@ Each step has a status box — update it as you go:
 Also update the **Wave status** table below when a wave changes state. Keep the
 "Last updated" line current.
 
-**Last updated:** 2026-07-01 · **Overall:** 1 / 5 waves complete
+**Last updated:** 2026-07-01 · **Overall:** 2 / 5 waves complete
 
 ### Wave status
 
 | Wave | View | Mockup | Status | Notes |
 |------|------|--------|--------|-------|
 | 0 | Shared design-system fixes | (all) | `[x]` done | Consolidated time helpers + Table capabilities; no visible change |
-| 1 | Kanban Board | `01-kanban-board.png` | `[ ]` pending | |
+| 1 | Kanban Board | `01-kanban-board.png` | `[x]` done | Whole card is now the drag source (no visible handle); relative bottom-right timestamp; Search label; taller cards. Header/nav/columns/controls already matched. |
 | 2 | Auth flow (login / signup / verify) | `02-auth-flow.png` | `[ ]` pending | |
 | 3 | Ticket details | `03-ticket-details.png` | `[ ]` pending | |
 | 4 | Team management | `04-team-management.png` | `[ ]` pending | |
@@ -75,28 +75,32 @@ duplicated `formatUtc` helpers.
 Files: `src/ui/board/BoardScreen.tsx`, `FilterBar.tsx`, `BoardColumn.tsx`,
 `TicketCard.tsx`, `src/ui/Header.tsx`, `src/ui/NavTabs.tsx`.
 
-- `[ ]` **1.1 Card drag handle.** Mockup cards have **no** visible drag handle;
-  `TicketCard.tsx` renders a `⠿` handle button top-right. Options: make the whole
-  card the drag source (keep a visually-hidden handle for keyboard a11y), or hide
-  the handle until hover. Preserve keyboard DnD + `aria-label`.
-- `[ ]` **1.2 Card timestamp.** Use relative time (0.1) and move it to the
-  **bottom-right** of the card ("2h ago" / "1d ago"), matching the mockup layout.
-- `[ ]` **1.3 Card badge row.** With the handle gone, the type badge (BUG/FEATURE)
-  sits alone on the top row — verify badge pill styling matches (uppercase, gray
-  fill, pill radius) per mockup.
-- `[ ]` **1.4 Card spacing/height.** Mockup cards are taller with more vertical
-  breathing room between title, epic line and timestamp. Adjust padding/gap.
-- `[ ]` **1.5 Filter labels.** Mockup labels read "Search", "Type", "Epic".
-  `FilterBar.tsx` uses `label="Search title"` — change to "Search" (keep the
-  placeholder "Search title…").
-- `[ ]` **1.6 Controls row.** Confirm "Team" select (left, labelled) and black
-  "+ New ticket" button (top-right) align with the mockup; both sit above the
-  filter card.
-- `[ ]` **1.7 Column header.** Confirm uppercase column labels + right-aligned
-  count chip match; canonical order NEW · READY FOR IMPLEMENTATION · IN PROGRESS ·
-  READY FOR ACCEPTANCE · DONE.
-- `[ ]` **1.8 Header/nav.** Confirm brand "TICKET TRACKER", centered tabs with the
-  active tab's gray fill, and right-aligned user email + caret match the mockup.
+- `[x]` **1.1 Card drag handle.** Removed the visible `⠿` handle button. The whole
+  card container is now the drag source — dnd-kit `attributes`/`listeners` are
+  spread onto it (dnd-kit supplies `role="button"` + `tabIndex=0` for keyboard
+  DnD) and a meaningful `aria-label="Move ticket: {title}"` is set after the
+  spread. Title stays a `<Link>`; the PointerSensor's 4px activation distance
+  keeps plain clicks navigating to the detail page. Board test updated (queries
+  Search by its new label) and green.
+- `[x]` **1.2 Card timestamp.** Swapped `formatCompactUtc` → `formatRelative`
+  ("2h ago"/"Yesterday"/…) and positioned it bottom-right via a dedicated
+  `TIMESTAMP_STYLE` (`alignSelf: flex-end`, right-aligned).
+- `[x]` **1.3 Card badge row.** With the handle gone the type badge sits alone at
+  the top of the card. Confirmed pill styling matches (uppercase, `--color-surface-muted`
+  fill, `borderRadius: 999px`).
+- `[x]` **1.4 Card spacing/height.** Bumped card `padding` `--space-3`→`--space-4`
+  and inter-row `gap` `--space-2`→`--space-3` for more vertical breathing room.
+- `[x]` **1.5 Filter labels.** Changed the search field `label` from
+  "Search title" → "Search" (placeholder "Search title…" kept). "Type"/"Epic"
+  already correct.
+- `[!]` **1.6 Controls row.** No change needed — Team select (left, labelled) +
+  black "+ New ticket" (right) already sit in a flex header row above the filter
+  card, matching the mockup.
+- `[!]` **1.7 Column header.** No change needed — uppercase labels + right-aligned
+  count `Pill` and canonical `BOARD_COLUMN_ORDER` already match.
+- `[!]` **1.8 Header/nav.** No change needed — brand "TICKET TRACKER" (bold, left),
+  centered `NavTabs` with active gray fill (`--color-surface-muted`), and
+  right-aligned `UserMenu` already match.
 
 ---
 

@@ -106,7 +106,7 @@ export function FilterBar({
     <div style={BAR_STYLE}>
       <div style={{ minWidth: "220px" }}>
         <TextField
-          label="Search title"
+          label="Search"
           type="search"
           placeholder="Search title…"
           value={searchText}
