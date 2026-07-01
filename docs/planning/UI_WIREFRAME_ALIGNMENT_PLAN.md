@@ -17,7 +17,7 @@ Each step has a status box — update it as you go:
 Also update the **Wave status** table below when a wave changes state. Keep the
 "Last updated" line current.
 
-**Last updated:** 2026-07-01 · **Overall:** 3 / 5 waves complete
+**Last updated:** 2026-07-01 · **Overall:** 4 / 5 waves complete
 
 ### Wave status
 
@@ -26,7 +26,7 @@ Also update the **Wave status** table below when a wave changes state. Keep the
 | 0 | Shared design-system fixes | (all) | `[x]` done | Consolidated time helpers + Table capabilities; no visible change |
 | 1 | Kanban Board | `01-kanban-board.png` | `[x]` done | Whole card is now the drag source (no visible handle); relative bottom-right timestamp; Search label; taller cards. Header/nav/columns/controls already matched. |
 | 2 | Auth flow (login / signup / verify) | `02-auth-flow.png` | `[x]` done | Removed "TICKET TRACKER" eyebrow from AuthCard; circular checkmark on verify success; centered "Account not verified?" + full-width outlined Resend on login; full-width "Continue to login". Copy/labels/links already matched. |
-| 3 | Ticket details | `03-ticket-details.png` | `[ ]` pending | |
+| 3 | Ticket details | `03-ticket-details.png` | `[x]` done | Back link → "← Back to {team name}" (resolved from teams list) linking `/board?teamId=…`; meta line in a gray bar with month-name UTC timestamps; larger 28px bold title; form row1 = Team·Type·State (3-col) with Epic full-width below; comment cards gray-filled; Post comment bottom-right. Header Delete/Save already top-right. |
 | 4 | Team management | `04-team-management.png` | `[ ]` pending | |
 | 5 | Epic management | `05-epic-management.png` | `[ ]` pending | |
 
@@ -141,26 +141,31 @@ verification). Files: `app/login/page.tsx`, `app/signup/page.tsx`,
 Files: `src/ui/tickets/TicketDetailScreen.tsx`, `TicketForm.tsx`,
 `CommentsPanel.tsx`.
 
-- `[ ]` **3.1 Back link label.** Mockup: "← Back to {Team name}"
-  (e.g. "← Back to Payments Team"). Code hardcodes "← Back to board". Use the
-  ticket's team name and link to `/board?teamId=…`.
-- `[ ]` **3.2 Meta line box.** Mockup wraps the meta line
-  ("TCK-… • Created by … • Created … UTC • Modified … UTC") in a subtle gray
-  background bar; current code is plain muted text. Add the container styling.
-- `[ ]` **3.3 Timestamp format.** Meta line uses "Jun 22, 09:15 UTC" style in the
-  mockup; current `formatUtc` yields "2025-06-22 09:15 UTC". Add a month-name UTC
-  formatter (see 0.1).
-- `[ ]` **3.4 Title size.** Mockup title is a large bold heading (bigger than the
-  current `--text-xl` / 20px). Bump the detail title size.
-- `[ ]` **3.5 Form field layout.** Mockup row 1 = **Team · Type · State** (three
-  columns), then **Epic** full-width, then Title, then Body. `TicketForm.tsx`
-  currently uses Team+Epic / Type+State (2×2). Re-lay out to match.
-- `[ ]` **3.6 Comments panel.** Give comment cards the light-gray fill shown in
-  the mockup; confirm author (bold) + right-aligned time header.
-- `[ ]` **3.7 Post-comment button.** Align "Post comment" to the **bottom-right**
-  of the panel (currently left-aligned).
-- `[ ]` **3.8 Header actions.** Confirm Delete (outlined) + Save (black) top-right
-  match the mockup.
+- `[x]` **3.1 Back link label.** The back link now reads "← Back to {team name}"
+  (resolved from the loaded teams list by `ticket.teamId`, since the ticket detail
+  payload has no team name) and links to `/board?teamId={ticket.teamId}`. Falls
+  back to "← Back to board" when no name is available. Restyled bold
+  (`fontWeight: 600`, `--color-text`).
+- `[x]` **3.2 Meta line box.** The meta line moved out of the header block to its
+  own `<p>` between the back link and the title, wrapped in a subtle gray bar
+  (`--color-surface-muted` background, `--space-2`/`--space-3` padding,
+  `--radius-md`). Same meta text composition (adds `Epic: …` when set).
+- `[x]` **3.3 Timestamp format.** Created/Modified in the meta line now use
+  `formatMonthDayUtc` → "Jan 2, 12:30 UTC" (imported from `@/ui/format-time`).
+  Comment timestamps left on the compact `formatUtc` (out of scope).
+- `[x]` **3.4 Title size.** Ticket title bumped from `--text-xl` (20px) to a literal
+  `28px` at `fontWeight: 700` (no larger token exists — px is intentional).
+- `[x]` **3.5 Form field layout.** `ROW_STYLE` changed to a 3-column grid holding
+  **Team · Type · State**; **Epic (optional)** is now a full-width Select below the
+  row, then Title, then Body. All behavior preserved (team-change-clears-epic,
+  disabled/loading states, per-field errors, labels, option lists).
+- `[x]` **3.6 Comments panel.** Comment cards now use a light-gray fill
+  (`--color-surface-muted`, border removed) keeping the bold author + right-aligned
+  muted time header and the body.
+- `[x]` **3.7 Post-comment button.** Wrapped the submit button in a flex row with
+  `justifyContent: flex-end` so "Post comment" sits at the panel's bottom-right.
+- `[!]` **3.8 Header actions.** No change needed — Delete (secondary/outlined) +
+  Save (primary/black) already sit top-right in `ACTIONS_STYLE`.
 
 ---
 

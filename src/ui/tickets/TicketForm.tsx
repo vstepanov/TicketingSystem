@@ -71,9 +71,10 @@ const FORM_STYLE: CSSProperties = {
   borderRadius: "var(--radius-lg)",
 };
 
+/** Row 1: Team · Type · State as three equal columns (mockup §5.8). */
 const ROW_STYLE: CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
   gap: "var(--space-3)",
 };
 
@@ -128,25 +129,6 @@ export function TicketForm({
         </Select>
 
         <Select
-          label="Epic (optional)"
-          value={values.epicId ?? EPIC_NONE}
-          error={errors.epicId}
-          disabled={disabled || epicsLoading || values.teamId.length === 0}
-          onChange={(e) =>
-            patch({ epicId: e.target.value === EPIC_NONE ? null : e.target.value })
-          }
-        >
-          <option value={EPIC_NONE}>None</option>
-          {epics.map((epic) => (
-            <option key={epic.id} value={epic.id}>
-              {epic.title}
-            </option>
-          ))}
-        </Select>
-      </div>
-
-      <div style={ROW_STYLE}>
-        <Select
           label="Type"
           value={values.type}
           error={errors.type}
@@ -174,6 +156,23 @@ export function TicketForm({
           ))}
         </Select>
       </div>
+
+      <Select
+        label="Epic (optional)"
+        value={values.epicId ?? EPIC_NONE}
+        error={errors.epicId}
+        disabled={disabled || epicsLoading || values.teamId.length === 0}
+        onChange={(e) =>
+          patch({ epicId: e.target.value === EPIC_NONE ? null : e.target.value })
+        }
+      >
+        <option value={EPIC_NONE}>None</option>
+        {epics.map((epic) => (
+          <option key={epic.id} value={epic.id}>
+            {epic.title}
+          </option>
+        ))}
+      </Select>
 
       <TextField
         label="Title"
