@@ -17,7 +17,7 @@ Each step has a status box — update it as you go:
 Also update the **Wave status** table below when a wave changes state. Keep the
 "Last updated" line current.
 
-**Last updated:** 2026-07-01 · **Overall:** 5 / 5 waves complete
+**Last updated:** 2026-07-01 · **Overall:** all waves complete (6 of 6, incl. Wave 0)
 
 ### Wave status
 
@@ -28,7 +28,7 @@ Also update the **Wave status** table below when a wave changes state. Keep the
 | 2 | Auth flow (login / signup / verify) | `02-auth-flow.png` | `[x]` done | Removed "TICKET TRACKER" eyebrow from AuthCard; circular checkmark on verify success; centered "Account not verified?" + full-width outlined Resend on login; full-width "Continue to login". Copy/labels/links already matched. |
 | 3 | Ticket details | `03-ticket-details.png` | `[x]` done | Back link → "← Back to {team name}" (resolved from teams list) linking `/board?teamId=…`; meta line in a gray bar with month-name UTC timestamps; larger 28px bold title; form row1 = Team·Type·State (3-col) with Epic full-width below; comment cards gray-filled; Post comment bottom-right. Header Delete/Save already top-right. |
 | 4 | Team management | `04-team-management.png` | `[x]` done | Tickets/Epics now plain centered numbers (pills removed) with centered headers; Modified uses relative time (`formatRelative`); Create-team field gains placeholder "e.g. Platform Engineering". Header, title-case headers, disabled-Delete + helper line already matched. |
-| 5 | Epic management | `05-epic-management.png` | `[ ]` pending | |
+| 5 | Epic management | `05-epic-management.png` | `[x]` done | Header re-laid out (title + black "+ Create epic" on top row, Team select beneath the title on the left); delete is now a small square "×" icon button (grayed when referenced, `aria-label="Delete epic"`); Tickets is a plain centered number (Pill removed) with centered header; Modified uses `formatRelative`; Edit panel buttons ordered Cancel (outline) · Save (black) bottom-right. Headers, subtitle, helper line already matched. |
 
 ### Verification checklist (run at the end of each wave)
 
@@ -202,22 +202,31 @@ Files: `src/ui/teams/TeamsScreen.tsx`, `TeamRow.tsx`, `CreateTeamPanel.tsx`.
 Files: `src/ui/epics/EpicsScreen.tsx`, `EpicRow.tsx`, `EditEpicPanel.tsx`,
 `CreateEpicPanel.tsx`.
 
-- `[ ]` **5.1 Header layout.** Mockup: "Epics" title with the **Team** label+select
-  directly beneath it (left), and "+ Create epic" black button top-right. Current
-  code groups the Team select + Create button together on the right. Re-lay out.
-- `[ ]` **5.2 Delete action = "×" icon.** Mockup uses a small square **×** icon
-  button (grayed when disabled) for delete, not a "Delete" text button. Update
-  `EpicRow.tsx` (keep `aria-label="Delete epic"` + disabled tooltip).
-- `[ ]` **5.3 Table headers.** Title-case headers (Wave 0.2): Title · Tickets ·
-  Modified · Actions.
-- `[ ]` **5.4 Count / modified columns.** Centered numeric Tickets column
-  (0.3) + relative Modified (0.1: "Today", "Jun 22", "Jun 19").
-- `[ ]` **5.5 Row subtitle.** Confirm the muted description line under each epic
-  title matches the mockup ("Short optional description…").
-- `[ ]` **5.6 Edit-epic panel.** Confirm the right-side panel matches: "Edit epic"
-  heading, Title input, "Description (optional)" textarea, Cancel (outline) + Save
-  (black) bottom-right. (Already close — verify only.)
-- `[ ]` **5.7 Helper line.** "Delete is disabled while tickets reference the epic."
+- `[x]` **5.1 Header layout.** Re-laid out `EpicsScreen.tsx`: the "Epics" title and
+  the black "+ Create epic" button now share a top `TITLE_ROW_STYLE` flex row
+  (title left, button right); the labelled **Team** select moved BENEATH the title
+  on the left (`CONTROLS_STYLE` with `marginTop`). All behavior preserved (URL
+  team sync via `selectTeam`, Create toggle disabled when no team).
+- `[x]` **5.2 Delete action = "×" icon.** In `EpicRow.tsx` the delete action is now a
+  small 34px-square outlined `Button` showing "×" (`DELETE_BUTTON_STYLE`), grayed
+  when `!epic.canDelete` (Button's disabled styling), with `aria-label="Delete
+  epic"` and the disabled `title` hint kept. Edit stays an outlined text button;
+  `onRequestDelete`/ConfirmDialog flow unchanged.
+- `[!]` **5.3 Table headers.** Already matched — screen authors title-case literals
+  ("Title", "Tickets", "Modified", "Actions"); global uppercase removed in 0.2.
+  No change beyond adding `align="center"` to the Tickets header (see 5.4).
+- `[x]` **5.4 Count / modified columns.** `EpicRow.tsx` renders `epic.ticketCount`
+  as a plain number in `Td align="center"` (Pill removed) with the matching
+  `Th align="center"` in `EpicsScreen.tsx`; Modified swapped
+  `formatCompactUtc` → `formatRelative`.
+- `[!]` **5.5 Row subtitle.** Already matched — muted `DESCRIPTION_STYLE` line renders
+  `epic.description` (single-line, ellipsis, `--text-sm`, muted) under the title.
+  No change.
+- `[x]` **5.6 Edit-epic panel.** `EditEpicPanel.tsx` heading/labels/fields already
+  matched; reordered the footer buttons to Cancel (outline) · Save (black) and
+  added `justifyContent: flex-end` so they sit bottom-right per the mockup.
+- `[!]` **5.7 Helper line.** Already matched — "Delete is disabled while tickets
+  reference the epic." rendered below the table (`HELPER_STYLE`). No change.
 
 ---
 

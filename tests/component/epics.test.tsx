@@ -254,10 +254,10 @@ describe("Delete epic", () => {
     const freeRow = screen.getByText("Free").closest("tr");
 
     expect(
-      within(referencedRow as HTMLElement).getByRole("button", { name: "Delete" }),
+      within(referencedRow as HTMLElement).getByRole("button", { name: "Delete epic" }),
     ).toBeDisabled();
     expect(
-      within(freeRow as HTMLElement).getByRole("button", { name: "Delete" }),
+      within(freeRow as HTMLElement).getByRole("button", { name: "Delete epic" }),
     ).toBeEnabled();
   });
 
@@ -277,7 +277,7 @@ describe("Delete epic", () => {
 
     const row = (await screen.findByText("Free")).closest("tr");
     await user.click(
-      within(row as HTMLElement).getByRole("button", { name: "Delete" }),
+      within(row as HTMLElement).getByRole("button", { name: "Delete epic" }),
     );
 
     const dialog = await screen.findByRole("dialog");
@@ -308,7 +308,7 @@ describe("Delete epic", () => {
 
     const row = (await screen.findByText("Free")).closest("tr");
     await user.click(
-      within(row as HTMLElement).getByRole("button", { name: "Delete" }),
+      within(row as HTMLElement).getByRole("button", { name: "Delete epic" }),
     );
     const dialog = await screen.findByRole("dialog");
     await user.click(within(dialog).getByRole("button", { name: "Delete" }));
