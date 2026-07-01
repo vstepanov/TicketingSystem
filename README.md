@@ -46,7 +46,7 @@ Then set at least:
 | `DATABASE_URL`   | Postgres connection string.                                   | Defaults to the compose `db` service; change with the `POSTGRES_*` vars. |
 | `APP_URL`        | Public base URL used to build verification links.             | e.g. `http://localhost:3000`. |
 | `SMTP_HOST`      | SMTP relay host.                                              | Default `relay1.dataart.com`. |
-| `SMTP_PORT`      | SMTP relay port.                                              | Default `587` (STARTTLS). |
+| `SMTP_PORT`      | SMTP relay port.                                              | Default `25` (unauthenticated relay to @dataart.com, STARTTLS). |
 | `SMTP_USER` / `SMTP_PASS` | SMTP credentials.                                   | Optional — leave blank if the relay accepts unauthenticated mail. |
 | `SMTP_FROM`      | From address on outbound email.                              | e.g. `Ticket Tracker <no-reply@dataart.com>`. |
 

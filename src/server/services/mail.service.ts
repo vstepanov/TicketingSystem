@@ -39,11 +39,15 @@ let cachedTransport: MailTransport | undefined;
  */
 function getDefaultTransport(): MailTransport {
   if (cachedTransport === undefined) {
+    const implicitTls = env.SMTP_PORT === 465;
     cachedTransport = nodemailer.createTransport({
       host: env.SMTP_HOST,
       port: env.SMTP_PORT,
-      // STARTTLS on 587 / implicit TLS on 465.
-      secure: env.SMTP_PORT === 465,
+      // Implicit TLS on 465; otherwise (25/587) upgrade to STARTTLS. We require
+      // the upgrade so verification tokens are never sent over plaintext — the
+      // DataArt relay advertises STARTTLS on 25.
+      secure: implicitTls,
+      requireTLS: !implicitTls,
       auth:
         env.SMTP_USER && env.SMTP_PASS
           ? { user: env.SMTP_USER, pass: env.SMTP_PASS }

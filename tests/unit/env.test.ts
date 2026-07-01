@@ -41,7 +41,7 @@ describe("parseEnv", () => {
     const env = parseEnv(rest);
 
     expect(env.NODE_ENV).toBe("development");
-    expect(env.SMTP_PORT).toBe(587);
+    expect(env.SMTP_PORT).toBe(25);
   });
 
   it("treats SMTP_USER and SMTP_PASS as optional", () => {

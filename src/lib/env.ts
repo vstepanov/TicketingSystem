@@ -52,13 +52,18 @@ export const envSchema = z.object({
   /** SMTP relay host. Defaults to the DataArt relay. */
   SMTP_HOST: z.string().min(1, "SMTP_HOST is required"),
 
-  /** SMTP relay port. Coerced from string; defaults to 587 (STARTTLS). */
+  /**
+   * SMTP relay port. Coerced from string; defaults to 25 — the DataArt relay
+   * (relay1.dataart.com) accepts unauthenticated mail to @dataart.com on 25
+   * with opportunistic STARTTLS. Use 465 for implicit TLS or 587 for
+   * authenticated submission.
+   */
   SMTP_PORT: z.coerce
     .number()
     .int("SMTP_PORT must be an integer")
     .min(1, "SMTP_PORT must be a positive port number")
     .max(65535, "SMTP_PORT must be a valid port number")
-    .default(587),
+    .default(25),
 
   /** SMTP auth username. Optional — some relays accept unauthenticated mail. */
   SMTP_USER: z.string().optional(),
