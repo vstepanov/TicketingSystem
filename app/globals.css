@@ -9,9 +9,16 @@
 
 :root {
   /* Surfaces */
-  --color-bg: #f7f7f8;
+  --color-bg: #f6f6f6;
   --color-surface: #ffffff;
   --color-surface-muted: #f2f2f3;
+
+  /* Board column group + count circle (mockup 01). The column body is a touch
+     LIGHTER than the page background so the group reads as a raised panel; the
+     count circle is a darker grey than the column so the number sits in a
+     clearly visible grey circle. */
+  --color-board-column: #fafafa;
+  --color-board-count: #ebebeb;
 
   /* Text */
   --color-text: #17181a;

@@ -349,7 +349,7 @@ function BoardColumnSkeleton({ state }: { state: TicketState }) {
         display: "flex",
         flexDirection: "column",
         minHeight: "600px",
-        background: "var(--color-surface-muted)",
+        background: "var(--color-board-column)",
         border: "1px solid var(--color-border)",
         borderRadius: "var(--radius-lg)",
       }}

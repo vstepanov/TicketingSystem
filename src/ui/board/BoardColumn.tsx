@@ -28,20 +28,20 @@ const COLUMN_STYLE: CSSProperties = {
   // Keep every column the same tall shape even when empty (mockup 01); the
   // board grid stretches them to the tallest, this sets the shared baseline.
   minHeight: "600px",
-  background: "var(--color-surface-muted)",
+  // Column group is a touch lighter than the page background (mockup 01).
+  background: "var(--color-board-column)",
   border: "1px solid var(--color-border)",
   borderRadius: "var(--radius-lg)",
 };
 
-// Circular count badge in the column header (mockup 01). The column body is the
-// light `--color-surface-muted` grey, so the circle uses a distinctly darker
-// grey (`--color-border-strong`) — otherwise it blends into the column and looks
-// like there is no circle at all.
+// Circular count badge in the column header (mockup 01). The column body is a
+// light grey, so the circle uses a darker grey (`--color-board-count`) —
+// otherwise it blends into the column and looks like there is no circle at all.
 const COUNT_STYLE: CSSProperties = {
   width: "28px",
   height: "28px",
   padding: 0,
-  background: "var(--color-border-strong)",
+  background: "var(--color-board-count)",
 };
 
 const HEADER_STYLE: CSSProperties = {
