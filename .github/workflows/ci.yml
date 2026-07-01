@@ -1,0 +1,66 @@
+# CI pipeline (plan §6, docs 06-devops/ci).
+#
+# Runs the fast, self-contained layers on every push / PR: lint, typecheck, and
+# the unit + component + integration + migration suites. The DB-backed suites use
+# `embedded-postgres` (booted in-process by the test harness), so no service
+# container is required.
+#
+# Docker Compose smoke (tests/smoke) and Playwright E2E (tests/e2e) are gated
+# behind a manual dispatch: they need Docker / browser binaries and are slower,
+# so they run on demand rather than on every commit.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: lint · typecheck · unit/integration/migration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npx eslint .
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Unit + component tests
+        run: npm run test:unit
+
+      - name: Integration tests
+        run: npm run test:integration
+
+      - name: Migration tests
+        run: npm run test:migration
+
+  e2e:
+    name: e2e (manual)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E
+        run: npm run test:e2e
