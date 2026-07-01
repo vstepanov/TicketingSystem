@@ -34,3 +34,9 @@ npm-debug.log*
 
 # Docker
 *.pid
+
+# Stray local scratch files
+_boot_tmp.mjs
+
+# Claude tooling/session
+.claude/

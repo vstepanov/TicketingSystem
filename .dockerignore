@@ -1,0 +1,48 @@
+# Dependencies (reinstalled inside the image)
+node_modules
+**/node_modules
+
+# Build output
+.next
+out
+dist
+build
+*.tsbuildinfo
+next-env.d.ts
+
+# Env & secrets (never bake into an image)
+.env
+.env.*
+!.env.example
+
+# Tests & test artifacts (not needed in the runtime image)
+tests
+playwright.config.ts
+vitest.config.ts
+coverage
+playwright-report
+test-results
+pgtest
+
+# Version control & CI
+.git
+.gitignore
+.github
+
+# Editor / OS cruft
+.idea
+.vscode
+*.iml
+.DS_Store
+
+# Docs (not needed at runtime)
+docs
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Logs
+*.log
+npm-debug.log*
