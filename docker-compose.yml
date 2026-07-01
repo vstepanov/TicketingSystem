@@ -52,8 +52,10 @@ services:
     env_file:
       - .env
     environment:
-      # Inside the compose network the DB host is the `db` service name.
-      DATABASE_URL: ${DATABASE_URL:-postgres://ticketing:ticketing@db:5432/ticketing}
+      # Inside the compose network the DB host is the `db` service name. This is
+      # built from the POSTGRES_* parts (not the host `.env` DATABASE_URL, which
+      # points at localhost for host tooling) so the two run modes never clash.
+      DATABASE_URL: postgres://${POSTGRES_USER:-ticketing}:${POSTGRES_PASSWORD:-ticketing}@db:5432/${POSTGRES_DB:-ticketing}
     depends_on:
       db:
         condition: service_healthy
@@ -74,7 +76,9 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      DATABASE_URL: ${DATABASE_URL:-postgres://ticketing:ticketing@db:5432/ticketing}
+      # In-network DB host (`db`), built from POSTGRES_* so it stays in sync and
+      # overrides the localhost DATABASE_URL that `.env` supplies for host tooling.
+      DATABASE_URL: postgres://${POSTGRES_USER:-ticketing}:${POSTGRES_PASSWORD:-ticketing}@db:5432/${POSTGRES_DB:-ticketing}
     ports:
       - "${WEB_PORT:-3000}:3000"
     healthcheck:

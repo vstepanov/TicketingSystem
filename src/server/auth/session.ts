@@ -29,6 +29,19 @@ export const SESSION_COOKIE_NAME = "session";
 /** Session lifetime: 7 days, expressed in seconds. */
 export const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;
 
+/**
+ * Whether the session cookie should carry the `Secure` flag.
+ *
+ * Keyed off the app's public URL scheme (`APP_URL`) rather than `NODE_ENV`: a
+ * `Secure` cookie is silently dropped by browsers over plain HTTP, so a
+ * production build served at `http://localhost` (e.g. `docker compose up`) would
+ * authenticate but never persist the session. Deriving `Secure` from the actual
+ * scheme keeps real HTTPS deployments secure while letting local/demo HTTP work.
+ */
+function secureCookieEnabled(): boolean {
+  return env.APP_URL.startsWith("https://");
+}
+
 /** Decoded session payload. */
 export interface SessionPayload {
   /** Authenticated user id (UUID). */
@@ -140,7 +153,7 @@ export async function setSessionCookie(userId: string): Promise<void> {
   const store = await cookies();
   store.set(SESSION_COOKIE_NAME, createSessionToken(userId), {
     httpOnly: true,
-    secure: env.NODE_ENV === "production",
+    secure: secureCookieEnabled(),
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_TTL_SECONDS,
@@ -152,7 +165,7 @@ export async function clearSessionCookie(): Promise<void> {
   const store = await cookies();
   store.set(SESSION_COOKIE_NAME, "", {
     httpOnly: true,
-    secure: env.NODE_ENV === "production",
+    secure: secureCookieEnabled(),
     sameSite: "lax",
     path: "/",
     maxAge: 0,
