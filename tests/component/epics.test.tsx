@@ -176,6 +176,26 @@ describe("Create epic", () => {
       });
     });
   });
+
+  it("closes the create form after a successful create", async () => {
+    stubGets(() => Promise.resolve([]));
+    apiMock.post.mockResolvedValue(makeEpic({ id: "new", title: "Billing" }));
+
+    const user = userEvent.setup();
+    renderScreen();
+
+    await screen.findByText("No epics for this team yet.");
+    await user.click(
+      screen.getAllByRole("button", { name: "+ Create epic" })[0],
+    );
+    await user.type(screen.getByLabelText("Title"), "Billing");
+    await user.click(screen.getByRole("button", { name: "Create" }));
+
+    // The create panel (its Title field) is gone once the create succeeds.
+    await waitFor(() => {
+      expect(screen.queryByLabelText("Title")).not.toBeInTheDocument();
+    });
+  });
 });
 
 describe("Edit epic (team immutable)", () => {

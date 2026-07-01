@@ -131,6 +131,25 @@ describe("Create team", () => {
       await screen.findByText("A team with that name already exists."),
     ).toBeInTheDocument();
   });
+
+  it("closes the create form after a successful create", async () => {
+    apiMock.get.mockResolvedValue([]);
+    apiMock.post.mockResolvedValue(makeTeam({ id: "new", name: "New Team" }));
+
+    const user = userEvent.setup();
+    renderScreen();
+
+    await user.click(
+      (await screen.findAllByRole("button", { name: "+ Create team" }))[0],
+    );
+    await user.type(await screen.findByLabelText("Team name"), "New Team");
+    await user.click(screen.getByRole("button", { name: "Create" }));
+
+    // The create form (its Team-name field) is gone once the create succeeds.
+    await waitFor(() => {
+      expect(screen.queryByLabelText("Team name")).not.toBeInTheDocument();
+    });
+  });
 });
 
 describe("Delete team", () => {
